@@ -4102,6 +4102,17 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->Effect[1] = 0;
             count++;
             break;
+        case 19970: // Entangling Roots (Rank 6)
+        case 19971: // Entangling Roots (Rank 5)
+        case 19972: // Entangling Roots (Rank 4)
+        case 19973: // Entangling Roots (Rank 3)
+        case 19974: // Entangling Roots (Rank 2)
+        case 19975: // Entangling Roots (Rank 1)
+        case 27010: // Entangling Roots (Rank 7)
+        case 53313: // Entangling Roots (Rank 8)
+            spellInfo->CastingTimeIndex = 1;
+            count++;
+            break;
         default:
             break;
         }
