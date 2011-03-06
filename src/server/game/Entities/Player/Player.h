@@ -2766,7 +2766,7 @@ template <class T> T Player::ApplySpellMod(uint32 spellId, SpellModOp op, T &bas
             if (mod->op == SPELLMOD_CASTING_TIME  && basevalue >= T(10000) && mod->value <= -100)
                 continue;
 
-            AddPctN(totalmul, mod->value);
+            AddFlatPctN(totalmul, mod->value);
         }
 
         DropModCharge(mod, spell);

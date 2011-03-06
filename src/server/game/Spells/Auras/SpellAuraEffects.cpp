@@ -1557,25 +1557,25 @@ void AuraEffect::PeriodicTick(AuraApplication * aurApp, Unit * caster) const
 
                 // Tenacity increase healing % taken
                 if (AuraEffect const* Tenacity = target->GetAuraEffect(58549, 0))
-                    AddPctN(TakenTotalMod, Tenacity->GetAmount());
+                    AddFlatPctN(TakenTotalMod, Tenacity->GetAmount());
 
                 // Healing taken percent
                 float minval = (float)target->GetMaxNegativeAuraModifier(SPELL_AURA_MOD_HEALING_PCT);
                 if (minval)
-                    AddPctF(TakenTotalMod, minval);
+                    AddFlatPctF(TakenTotalMod, minval);
 
                 float maxval = (float)target->GetMaxPositiveAuraModifier(SPELL_AURA_MOD_HEALING_PCT);
                 if (maxval)
-                    AddPctF(TakenTotalMod, maxval);
+                    AddFlatPctF(TakenTotalMod, maxval);
 
                 // Healing over time taken percent
                 float minval_hot = (float)target->GetMaxNegativeAuraModifier(SPELL_AURA_MOD_HOT_PCT);
                 if (minval_hot)
-                    AddPctF(TakenTotalMod, minval_hot);
+                    AddFlatPctF(TakenTotalMod, minval_hot);
 
                 float maxval_hot = (float)target->GetMaxPositiveAuraModifier(SPELL_AURA_MOD_HOT_PCT);
                 if (maxval_hot)
-                    AddPctF(TakenTotalMod, maxval_hot);
+                    AddFlatPctF(TakenTotalMod, maxval_hot);
 
                 TakenTotalMod = std::max(TakenTotalMod, 0.0f);
 
@@ -5559,7 +5559,12 @@ void AuraEffect::HandleModDamagePercentDone(AuraApplication const * aurApp, uint
         return;
 
     if (target->HasItemFitToSpellRequirements(GetSpellProto()))
+    {
         aurApp->GetTarget()->ApplyModSignedFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT, GetAmount()/100.0f, apply);
+        aurApp->GetTarget()->UpdateDamagePhysical(BASE_ATTACK);
+        aurApp->GetTarget()->UpdateDamagePhysical(OFF_ATTACK);
+        aurApp->GetTarget()->UpdateDamagePhysical(RANGED_ATTACK);
+    }
 }
 
 void AuraEffect::HandleModOffhandDamagePercent(AuraApplication const * aurApp, uint8 mode, bool apply) const
