@@ -1523,6 +1523,22 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                 break;
             }
             break;
+        case SPELLFAMILY_ROGUE:
+            switch(GetSpellInfo()->Id)
+            {
+                case 45176: // Master Poisoner Proc Trigger (SERVERSIDE)
+                    {
+                        uint32 spellId = damage;
+                        uint32 value = SpellMgr::CalculateSpellEffectAmount(m_triggeredByAuraSpell, EFFECT_0);
+                        aurEff->SetAmount(value);
+                        return;
+                    }
+                default:
+                    break;
+            }
+            break;
+        default:
+            break;
     }
 
     //spells triggered by dummy effect should not miss
