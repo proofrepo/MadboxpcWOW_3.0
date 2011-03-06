@@ -1277,8 +1277,8 @@ void Guardian::UpdateDamagePhysical(WeaponAttackType attType)
         {
             case 61682:
             case 61683:
-                AddPctN(mindamage, -(*itr)->GetAmount());
-                AddPctN(maxdamage, -(*itr)->GetAmount());
+                AddPctN(mindamage, -(*itr)->GetAmount() / 2.0f);
+                AddPctN(maxdamage, -(*itr)->GetAmount() / 2.0f);
                 break;
             default:
                 break;
