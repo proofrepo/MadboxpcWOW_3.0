@@ -4121,6 +4121,12 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->AttributesEx2 |= SPELL_ATTR2_TRIGGERED_CAN_TRIGGER;
             count++;
             break;
+        case 53480: // Roar of Sacrifice Split damage
+            spellInfo->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+            spellInfo->EffectApplyAuraName[1] = SPELL_AURA_SPLIT_DAMAGE_PCT;
+            spellInfo->EffectMiscValue[1] = 127;
+            count++;
+            break;
         default:
             break;
         }
