@@ -64,7 +64,7 @@ void PetAI::_stopAttack()
 {
     if (!me->isAlive())
     {
-        sLog->outStaticDebug("Creature stoped attacking cuz his dead [guid=%u]", me->GetGUIDLow());
+        sLog->outStaticDebug("Creature stopped attacking because is dead [guid=%u]", me->GetGUIDLow());
         me->GetMotionMaster()->Clear();
         me->GetMotionMaster()->MoveIdle();
         me->CombatStop();
@@ -116,7 +116,7 @@ void PetAI::UpdateAI(const uint32 diff)
             HandleReturnMovement();
     }
     else if (owner && !me->HasUnitState(UNIT_STAT_FOLLOW)) // no charm info and no victim
-        me->GetMotionMaster()->MoveFollow(owner,PET_FOLLOW_DIST, me->GetFollowAngle());
+        me->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, me->GetFollowAngle());
 
     if (!me->GetCharmInfo())
         return;
@@ -349,7 +349,7 @@ void PetAI::HandleReturnMovement()
                 me->GetCharmInfo()->GetStayPosition(x, y, z);
                 me->GetCharmInfo()->SetIsReturning(true);
                 me->GetMotionMaster()->Clear();
-                me->GetMotionMaster()->MovePoint(me->GetGUIDLow(),x,y,z);
+                me->GetMotionMaster()->MoveFollow(me->GetCharmerOrOwner(), PET_FOLLOW_DIST, me->GetFollowAngle());
             }
         }
     }

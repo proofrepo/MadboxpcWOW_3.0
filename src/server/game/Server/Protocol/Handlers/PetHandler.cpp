@@ -164,9 +164,10 @@ void WorldSession::HandlePetActionHelper(Unit *pet, uint64 guid1, uint16 spellid
                     charmInfo->SaveStayPosition();
                     break;
                 case COMMAND_FOLLOW:                        //spellid=1792  //FOLLOW
+                {
                     pet->AttackStop();
                     pet->InterruptNonMeleeSpells(false);
-                    pet->GetMotionMaster()->MoveFollow(_player,PET_FOLLOW_DIST,pet->GetFollowAngle());
+                    pet->GetMotionMaster()->MoveFollow(_player, PET_FOLLOW_DIST, pet->GetFollowAngle());
                     charmInfo->SetCommandState(COMMAND_FOLLOW);
 
                     charmInfo->SetIsCommandAttack(false);
@@ -174,6 +175,7 @@ void WorldSession::HandlePetActionHelper(Unit *pet, uint64 guid1, uint16 spellid
                     charmInfo->SetIsReturning(true);
                     charmInfo->SetIsFollowing(false);
                     break;
+                }
                 case COMMAND_ATTACK:                        //spellid=1792  //ATTACK
                 {
                     // Can't attack if owner is pacified
