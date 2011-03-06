@@ -29,7 +29,7 @@ enum DeathKnightSpells
     DK_SPELL_RUNIC_POWER_ENERGIZE               = 49088,
     DK_SPELL_ANTI_MAGIC_SHELL_TALENT            = 51052,
     DK_SPELL_SUMMON_GARGOYLE                    = 50514,
-    DK_SPELL_CORPSE_EXPLOSION_TRIGGERED         = 43999,
+    DK_SPELL_PET_EXPLODE                        = 47496,
     DISPLAY_GHOUL_CORPSE                        = 25537,
     DK_SPELL_SCOURGE_STRIKE_TRIGGERED           = 70890,
     DK_SPELL_WILL_OF_THE_NECROPOLIS_TALENT_R1   = 49189,
@@ -197,7 +197,7 @@ class spell_dk_corpse_explosion : public SpellScriptLoader
 
             bool Validate(SpellEntry const * /*spellEntry*/)
             {
-                if (!sSpellStore.LookupEntry(DK_SPELL_CORPSE_EXPLOSION_TRIGGERED))
+                if (!sSpellStore.LookupEntry(DK_SPELL_PET_EXPLODE))
                     return false;
                 return true;
             }
@@ -206,18 +206,23 @@ class spell_dk_corpse_explosion : public SpellScriptLoader
             {
                 if (Unit* unitTarget = GetHitUnit())
                 {
-                    int32 bp = 0;
+                    int32 bp0 = 0;
+                    int32 bp1 = 0;
                     // Living ghoul as a target
                     if (unitTarget->isAlive())
-                        bp = int32(unitTarget->CountPctFromMaxHealth(25));
+                    {
+                        bp0 = int32(unitTarget->CountPctFromMaxHealth(25));
+                        bp1 = int32(unitTarget->CountPctFromMaxHealth(200));
+                        unitTarget->CastCustomSpell(unitTarget, DK_SPELL_PET_EXPLODE, &bp0, &bp1, NULL, false);
+                    }
                     // Some corpse
                     else
-                        bp = GetEffectValue();
-                    GetCaster()->CastCustomSpell(unitTarget, SpellMgr::CalculateSpellEffectAmount(GetSpellInfo(), 1), &bp, NULL, NULL, true);
-                    // Corpse Explosion (Suicide)
-                    unitTarget->CastCustomSpell(unitTarget, DK_SPELL_CORPSE_EXPLOSION_TRIGGERED, &bp, NULL, NULL, true);
-                    // Set corpse look
-                    unitTarget->SetDisplayId(DISPLAY_GHOUL_CORPSE + urand(0, 3));
+                    {
+                        bp0 = GetEffectValue();
+                        GetCaster()->CastCustomSpell(unitTarget, SpellMgr::CalculateSpellEffectAmount(GetSpellInfo(), 1), &bp0, NULL, NULL, true);
+                        // Set corpse look
+                        unitTarget->SetDisplayId(DISPLAY_GHOUL_CORPSE + urand(0, 3));
+                    }
                 }
             }
 
