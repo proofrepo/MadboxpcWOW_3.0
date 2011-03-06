@@ -1491,17 +1491,17 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask, bool 
                }
            }
 
-           bool bSchoolDamage = false;
+           bool bDirectDamage = false;
            for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
            {
-               if (m_spellInfo->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE)
+               if (m_spellInfo->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE || m_spellInfo->Effect[i] == SPELL_EFFECT_HEALTH_LEECH)
                {
-                   bSchoolDamage = true;
+                   bDirectDamage = true;
                    break;
                }
            }
 
-           if (bNegativeAura && bSchoolDamage)
+           if (bNegativeAura && bDirectDamage)
            {
                uint32 tmp = 0;
                tmp += unit->GetMaxPositiveAuraModifierByMiscValue(SPELL_AURA_MOD_DEBUFF_RESISTANCE, int32(m_spellInfo->Dispel)) * 100;
