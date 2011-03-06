@@ -1527,20 +1527,21 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
             switch(GetSpellInfo()->Id)
             {
                 case 45176: // Master Poisoner Proc Trigger (SERVERSIDE)
-                    {
-                        uint32 spellId = damage;
-                        uint32 value = SpellMgr::CalculateSpellEffectAmount(m_triggeredByAuraSpell, EFFECT_0);
+                {
+                    uint32 spellId = damage;
+                    uint32 value = SpellMgr::CalculateSpellEffectAmount(m_triggeredByAuraSpell, EFFECT_0);
+
+                    if (AuraEffect * aurEff = unitTarget->GetAuraEffect(spellId, EFFECT_2, m_caster->GetGUID()))
                         aurEff->SetAmount(value);
-                        return;
-                    }
+                    return;
+                }
                 default:
                     break;
             }
             break;
         default:
-            break;
-    }
-
+            break;    
+}
     //spells triggered by dummy effect should not miss
     if (spell_id)
     {
