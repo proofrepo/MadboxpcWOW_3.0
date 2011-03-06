@@ -1558,19 +1558,11 @@ void Aura::HandleAuraSpecificMods(AuraApplication const * aurApp, Unit * caster,
                 else
                 {
                     // Remove passive auras
-                    if (presence == 48266 || bloodPresenceAura)
-                        target->RemoveAurasDueToSpell(63611);
-                    if (presence == 48263 || frostPresenceAura)
-                        target->RemoveAurasDueToSpell(61261);
-                    if (presence == 48265 || unholyPresenceAura)
-                    {
-                        if (presence == 48265 && unholyPresenceAura)
-                        {
-                            target->RemoveAurasDueToSpell(63622);
-                            target->RemoveAurasDueToSpell(65095);
-                        }
-                        target->RemoveAurasDueToSpell(49772);
-                    }
+                   target->RemoveAurasDueToSpell(63611);
+                   target->RemoveAurasDueToSpell(61261);
+                   target->RemoveAurasDueToSpell(63622);
+                   target->RemoveAurasDueToSpell(65095);
+                   target->RemoveAurasDueToSpell(49772);
                 }
             }
             break;
