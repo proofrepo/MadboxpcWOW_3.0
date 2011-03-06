@@ -1477,7 +1477,41 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask, bool 
             }
         }
 
-        if (m_originalCaster)
+        // Chance resist debuff
+       bool auraResist = false;
+       if (!IsPositiveSpell(m_spellInfo->Id))
+       {
+           bool bNegativeAura = false;
+           for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+           {
+               if (m_spellInfo->EffectApplyAuraName[i] != 0)
+               {
+                   bNegativeAura = true;
+                   break;
+               }
+           }
+
+           bool bSchoolDamage = false;
+           for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+           {
+               if (m_spellInfo->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE)
+               {
+                   bSchoolDamage = true;
+                   break;
+               }
+           }
+
+           if (bNegativeAura && bSchoolDamage)
+           {
+               uint32 tmp = 0;
+               tmp += unit->GetMaxPositiveAuraModifierByMiscValue(SPELL_AURA_MOD_DEBUFF_RESISTANCE, int32(m_spellInfo->Dispel)) * 100;
+               tmp += unit->GetMaxNegativeAuraModifierByMiscValue(SPELL_AURA_MOD_DEBUFF_RESISTANCE, int32(m_spellInfo->Dispel)) * 100;
+               if (urand(0,10000) < tmp)
+                   auraResist = true;
+           }
+       }
+
+       if (m_originalCaster && !auraResist)
         {
             m_spellAura = Aura::TryCreate(aurSpellInfo, effectMask, unit,
                 m_originalCaster,(aurSpellInfo == m_spellInfo)? &m_spellValue->EffectBasePoints[0] : &basePoints[0], m_CastItem);
@@ -5024,6 +5058,57 @@ SpellCastResult Spell::CheckCast(bool strict)
     castResult = CallScriptCheckCastHandlers();
     if (castResult != SPELL_CAST_OK)
         return castResult;
+
+    // Dispel check - only if the first effect is dispel
+    if (!m_IsTriggeredSpell && (m_spellInfo->Effect[EFFECT_0] == SPELL_EFFECT_DISPEL))
+        if (Unit const * target = m_targets.getUnitTarget())
+           if (!GetSpellRadius(m_spellInfo, EFFECT_0, target->IsFriendlyTo(m_caster)))
+           {
+               bool check = true;
+               uint32 dispelMask = GetDispellMask(DispelType(m_spellInfo->EffectMiscValue[EFFECT_0]));
+
+               for (uint8 effIndex = EFFECT_1; effIndex < MAX_SPELL_EFFECTS; ++effIndex)
+               {
+                   if (m_spellInfo->Effect[effIndex] == SPELL_EFFECT_DISPEL)
+                       dispelMask |= GetDispellMask(DispelType(m_spellInfo->EffectMiscValue[effIndex]));
+                   // If there is any other effect don't check
+                   else if (m_spellInfo->Effect[effIndex])
+                   {
+                       check = false;
+                       break;
+                   }
+               }
+
+               if (check)
+               {
+                   bool failed = true;
+
+                   Unit::AuraMap const & auras = target->GetOwnedAuras();
+                   for (Unit::AuraMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
+                   {
+                       Aura * aura = itr->second;
+                       AuraApplication * aurApp = aura->GetApplicationOfTarget(target->GetGUID());
+                       if (!aurApp)
+                           continue;
+
+                       if ((1 << aura->GetSpellProto()->Dispel) & dispelMask)
+                       {
+                           bool positive = aurApp->IsPositive() ? !(aura->GetSpellProto()->AttributesEx & SPELL_ATTR1_NEGATIVE) : false;
+
+                           // Can only dispel positive auras on enemies and negative on allies
+                           if (positive != target->IsFriendlyTo(m_caster))
+                           {
+                               failed = false;
+                               break;
+                           }
+                       }
+                   }
+
+                   if (failed)
+                       return SPELL_FAILED_NOTHING_TO_DISPEL;
+               }
+           }
+
 
     for (int i = 0; i < MAX_SPELL_EFFECTS; i++)
     {
