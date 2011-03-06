@@ -4117,6 +4117,10 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->DurationIndex = 587;
             count++;
             break;
+        case 70890: // Scourge Strike Triggered
+            spellInfo->AttributesEx2 |= SPELL_ATTR2_TRIGGERED_CAN_TRIGGER;
+            count++;
+            break;
         default:
             break;
         }
