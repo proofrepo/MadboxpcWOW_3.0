@@ -2377,13 +2377,18 @@ void Spell::EffectHealthLeech(SpellEffIndex effIndex)
 
     float healMultiplier = SpellMgr::CalculateSpellEffectValueMultiplier(m_spellInfo, effIndex, m_originalCaster, this);
 
+    // apply bonus to damage if it's Death Coil
+   if (m_spellInfo->SpellFamilyFlags[0] & 0x80000)
+       damage = m_caster->SpellDamageBonus(m_caster, m_spellInfo, damage, SPELL_DIRECT_DAMAGE);
+
     m_damage += damage;
     // get max possible damage, don't count overkill for heal
     uint32 healthGain = uint32(-unitTarget->GetHealthGain(-damage) * healMultiplier);
 
     if (m_caster->isAlive())
     {
-        healthGain = m_caster->SpellHealingBonus(m_caster, m_spellInfo, healthGain, HEAL);
+        if (!(m_spellInfo->SpellFamilyFlags[0] & 0x80000))
+           healthGain = m_caster->SpellHealingBonus(m_caster, m_spellInfo, healthGain, HEAL);
         m_caster->HealBySpell(m_caster, m_spellInfo, uint32(healthGain));
     }
 }
