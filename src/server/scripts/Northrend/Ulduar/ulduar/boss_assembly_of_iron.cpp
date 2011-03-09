@@ -235,7 +235,7 @@ public:
             DoAction(EVENT_UPDATEPHASE);
         }
 
-        void DoAction(uint32 action)
+        void DoAction(const int32 action)
         {
             switch (action)
             {
@@ -381,7 +381,7 @@ public:
             DoAction(EVENT_UPDATEPHASE);
         }
 
-        void DoAction(uint32 action)
+        void DoAction(const int32 action)
         {
             switch (action)
             {
@@ -622,7 +622,7 @@ public:
             DoAction(EVENT_UPDATEPHASE);
         }
 
-        void DoAction(uint32 action)
+        void DoAction(const int32 action)
         {
             switch (action)
             {
@@ -705,7 +705,7 @@ public:
                         DoCast(SPELL_BERSERK);
                         break;
                     case EVENT_CHAIN_LIGHTNING:
-                        if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
+                        if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM,0))
                             DoCast(pTarget, RAID_MODE(SPELL_CHAIN_LIGHTNING_N , SPELL_CHAIN_LIGHTNING_H));
                         events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, urand(9000,17000));
                         break;

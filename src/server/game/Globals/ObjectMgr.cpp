@@ -197,8 +197,8 @@ LanguageDesc const* GetLanguageDescByID(uint32 lang)
 
 bool SpellClickInfo::IsFitToRequirements(Unit const* clicker, Unit const* clickee) const
 {
-    Player const* playerClicker = NULL;
-    if (playerClicker = clicker->ToPlayer())
+    Player const* playerClicker = clicker->ToPlayer();
+    if (playerClicker)
     {
         if (questStart)
         {
@@ -2741,19 +2741,19 @@ void ObjectMgr::LoadItemSetNames()
     sLog->outString();
 }
 
-void ObjectMgr::LoadVehicleAccessories()
+void ObjectMgr::LoadVehicleTemplateAccessories()
 {
     uint32 oldMSTime = getMSTime();
 
-    m_VehicleAccessoryMap.clear();                           // needed for reload case
+    m_VehicleTemplateAccessoryMap.clear();                           // needed for reload case
 
     uint32 count = 0;
 
-    QueryResult result = WorldDatabase.Query("SELECT `entry`,`accessory_entry`,`seat_id`,`minion`,`summontype`,`summontimer` FROM `vehicle_accessory`");
+    QueryResult result = WorldDatabase.Query("SELECT `entry`,`accessory_entry`,`seat_id`,`minion`,`summontype`,`summontimer` FROM `vehicle_template_accessory`");
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 LoadVehicleAccessor. DB table `vehicle_accessory` is empty.");
+        sLog->outErrorDb(">> Loaded 0 vehicle template accessories. DB table `vehicle_template_accessory` is empty.");
         sLog->outString();
         return;
     }
@@ -2771,9 +2771,59 @@ void ObjectMgr::LoadVehicleAccessories()
 
         if (!sCreatureStorage.LookupEntry<CreatureInfo>(uiEntry))
         {
-            sLog->outErrorDb("Table `vehicle_accessory`: creature template entry %u does not exist.", uiEntry);
+            sLog->outErrorDb("Table `vehicle_template_accessory`: creature template entry %u does not exist.", uiEntry);
             continue;
         }
+
+        if (!sCreatureStorage.LookupEntry<CreatureInfo>(uiAccessory))
+        {
+            sLog->outErrorDb("Table `vehicle_template_accessory`: Accessory %u does not exist.", uiAccessory);
+            continue;
+        }
+
+        if (mSpellClickInfoMap.find(uiEntry) == mSpellClickInfoMap.end())
+        {
+            sLog->outErrorDb("Table `vehicle_template_accessory`: creature template entry %u has no data in npc_spellclick_spells", uiEntry);
+            continue;
+        }
+
+        m_VehicleTemplateAccessoryMap[uiEntry].push_back(VehicleAccessory(uiAccessory, uiSeat, bMinion, uiSummonType, uiSummonTimer));
+
+        ++count;
+    }
+    while (result->NextRow());
+
+    sLog->outString(">> Loaded %u Vehicle Template Accessories in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString();
+}
+
+void ObjectMgr::LoadVehicleAccessories()
+{
+    uint32 oldMSTime = getMSTime();
+
+    m_VehicleAccessoryMap.clear();                           // needed for reload case
+
+    uint32 count = 0;
+
+    QueryResult result = WorldDatabase.Query("SELECT `guid`,`accessory_entry`,`seat_id`,`minion`,`summontype`,`summontimer` FROM `vehicle_accessory`");
+
+    if (!result)
+    {
+        sLog->outErrorDb(">> Loaded 0 vehicle accessories. DB table `vehicle_accessory` is empty.");
+        sLog->outString();
+        return;
+    }
+
+    do
+    {
+        Field *fields = result->Fetch();
+
+        uint32 uiGUID       = fields[0].GetUInt32();
+        uint32 uiAccessory  = fields[1].GetUInt32();
+        int8   uiSeat       = int8(fields[2].GetInt16());
+        bool   bMinion      = fields[3].GetBool();
+        uint8  uiSummonType = fields[4].GetUInt8();
+        uint32 uiSummonTimer= fields[5].GetUInt32();
 
         if (!sCreatureStorage.LookupEntry<CreatureInfo>(uiAccessory))
         {
@@ -2781,13 +2831,7 @@ void ObjectMgr::LoadVehicleAccessories()
             continue;
         }
 
-        if (mSpellClickInfoMap.find(uiEntry) == mSpellClickInfoMap.end())
-        {
-            sLog->outErrorDb("Table `vehicle_accessory`: creature template entry %u has no data in npc_spellclick_spells", uiEntry);
-            continue;
-        }
-
-        m_VehicleAccessoryMap[uiEntry].push_back(VehicleAccessory(uiAccessory, uiSeat, bMinion, uiSummonType, uiSummonTimer));
+        m_VehicleAccessoryMap[uiGUID].push_back(VehicleAccessory(uiAccessory, uiSeat, bMinion, uiSummonType, uiSummonTimer));
 
         ++count;
     }
@@ -6692,7 +6736,7 @@ uint32 ObjectMgr::GenerateAuctionID()
 
 uint64 ObjectMgr::GenerateEquipmentSetGuid()
 {
-    if (m_equipmentSetGuid >= 0xFFFFFFFFFFFFFFFEll)
+    if (m_equipmentSetGuid >= uint64(0xFFFFFFFFFFFFFFFELL))
     {
         sLog->outError("EquipmentSet guid overflow!! Can't continue, shutting down server. ");
         World::StopNow(ERROR_EXIT_CODE);
