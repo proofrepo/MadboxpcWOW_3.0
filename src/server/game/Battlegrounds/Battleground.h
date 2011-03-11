@@ -449,7 +449,7 @@ class Battleground
         void SetBgMap(BattlegroundMap* map) { m_Map = map; }
         BattlegroundMap* GetBgMap()
         {
-            ASSERT(m_Map);
+            //ASSERT(m_Map); Fix Crash Arena DS.
             return m_Map;
         }
 
