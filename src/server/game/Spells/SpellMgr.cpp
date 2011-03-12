@@ -4168,6 +4168,14 @@ void SpellMgr::LoadSpellCustomAttr()
                     break;
                 count++;
                 break;
+            case SPELLFAMILY_SHAMAN:
+                // Do not allow Thunderstorm to be used while stunned
+                if (spellInfo->SpellFamilyFlags[1] & 0x2000)
+                    spellInfo->AttributesEx5 -= SPELL_ATTR5_USABLE_WHILE_STUNNED;
+                else
+                    break;
+                count++;
+                break;
         }
     }
 
