@@ -78,7 +78,7 @@ public:
 
                 // Search only Serpent Sting, Viper Sting, Scorpid Sting auras
                 flag96 familyFlag = aura->GetSpellProto()->SpellFamilyFlags;
-                if (!(familyFlag[1] & 0x00000080 || familyFlag[0] & 0x0000C000))
+                if (!(familyFlag[1] & 0x80 || familyFlag[0] & 0xC000))
                     continue;
                 if (AuraEffect const * aurEff = aura->GetEffect(0))
                 {
@@ -91,7 +91,7 @@ public:
                         ApplyPctN(basePoint, TickCount * 40);
                     }
                     // Viper Sting - Instantly restores mana to you equal to 60% of the total amount drained by your Viper Sting.
-                    else if (familyFlag[1] & 0x00000080)
+                    else if (familyFlag[1] & 0x80)
                     {
                         int32 TickCount = aura->GetEffect(0)->GetTotalTicks();
                         spellId = HUNTER_SPELL_CHIMERA_SHOT_VIPER;
@@ -104,7 +104,7 @@ public:
                         ApplyPctN(basePoint, TickCount * 60);
                     }
                     // Scorpid Sting - Attempts to Disarm the target for 10 sec. This effect cannot occur more than once per 1 minute.
-                    else if (familyFlag[0] & 0x00008000)
+                    else if (familyFlag[0] & 0x8000)
                         spellId = HUNTER_SPELL_CHIMERA_SHOT_SCORPID;
                     // ?? nothing say in spell desc (possibly need addition check)
                     //if (familyFlag & 0x0000010000000000LL || // dot
@@ -118,10 +118,17 @@ public:
                 }
                 break;
             }
-            if (spellId)
-                caster->CastCustomSpell(unitTarget, spellId, &basePoint, 0, 0, true);
-            if (spellId == HUNTER_SPELL_CHIMERA_SHOT_SCORPID && caster->ToPlayer()) // Scorpid Sting - Add 1 minute cooldown
-                caster->ToPlayer()->AddSpellCooldown(spellId,0,uint32(time(NULL) + 60));
+            if (spellId && caster->ToPlayer() && !caster->ToPlayer()->HasSpellCooldown(spellId))
+            {
+                if (spellId == HUNTER_SPELL_CHIMERA_SHOT_SCORPID)
+                {
+                    unitTarget->CastSpell(unitTarget, spellId, true);
+                    // Scorpid Sting - Add 1 minute cooldown
+                    caster->ToPlayer()->AddSpellCooldown(spellId,0,uint32(time(NULL) + 60));
+                }
+                else
+                    caster->CastCustomSpell(unitTarget, spellId, &basePoint, 0, 0, true);
+            }
         }
 
         void Register()
