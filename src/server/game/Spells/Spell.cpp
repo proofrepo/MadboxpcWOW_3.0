@@ -4578,7 +4578,19 @@ void Spell::TakeRunePower()
         RuneType rune = plr->GetCurrentRune(i);
         if ((plr->GetRuneCooldown(i) == 0) && (runeCost[rune] > 0))
         {
-            plr->SetRuneCooldown(i, plr->GetRuneBaseCooldown(i));
+            for (std::list<TargetInfo>::iterator ihit= m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
+            {
+                switch (ihit->missCondition)
+                {
+                    case SPELL_MISS_DODGE:
+                    case SPELL_MISS_PARRY:
+                    case SPELL_MISS_BLOCK:
+                        break;
+                    default:
+                        plr->SetRuneCooldown(i, plr->GetRuneBaseCooldown(i));
+                        break;
+                }
+            }
             plr->SetLastUsedRune(RuneType(rune));
             runeCost[rune]--;
         }
@@ -4593,7 +4605,19 @@ void Spell::TakeRunePower()
             RuneType rune = plr->GetCurrentRune(i);
             if ((plr->GetRuneCooldown(i) == 0) && (rune == RUNE_DEATH))
             {
-                plr->SetRuneCooldown(i, plr->GetRuneBaseCooldown(i));
+                for (std::list<TargetInfo>::iterator ihit= m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
+                {
+                    switch (ihit->missCondition)
+                    {
+                        case SPELL_MISS_DODGE:
+                        case SPELL_MISS_PARRY:
+                        case SPELL_MISS_BLOCK:
+                            break;
+                        default:
+                            plr->SetRuneCooldown(i, plr->GetRuneBaseCooldown(i));
+                            break;
+                    }
+                }
                 plr->SetLastUsedRune(RuneType(rune));
                 runeCost[rune]--;
 
