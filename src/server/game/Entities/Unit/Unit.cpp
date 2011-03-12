@@ -8078,6 +8078,14 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, AuraEffect* trig
                             CastSpell(pVictim, 27526, true, castItem, triggeredByAura);
                         return true;
                     }
+                    // Blade Warding
+                    case 64440:
+                    {
+                        trigger_spell_id = 64442;
+                        SpellEntry const* triggerspell = sSpellStore.LookupEntry(trigger_spell_id);
+                        basepoints0 = int32(triggeredByAura->GetBase()->GetStackAmount() * (triggerspell->EffectBasePoints[0] + urand(1, triggerspell->EffectDieSides[0])));
+                        break;
+                    }
                 }
                 break;
             case SPELLFAMILY_MAGE:
