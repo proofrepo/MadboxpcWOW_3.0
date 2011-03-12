@@ -1416,7 +1416,10 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
         uint32 VictimDefense=pVictim->GetDefenseSkillValue();
         uint32 AttackerMeleeSkill=GetUnitMeleeSkill();
 
-        Probability *= AttackerMeleeSkill/(float)VictimDefense;
+        Probability += ((AttackerMeleeSkill - VictimDefense) / 140.0f) * 20.0f;
+
+        if (Probability < 0.0f)
+            Probability = 0.0f;
 
         if (Probability > 40.0f)
             Probability = 40.0f;
