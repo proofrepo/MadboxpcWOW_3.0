@@ -5830,6 +5830,8 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
                     if (target->GetTypeId() == TYPEID_PLAYER)
                         if (Unit * spellTarget = ObjectAccessor::GetUnit(*target,target->ToPlayer()->GetComboTarget()))
                             target->CastSpell(spellTarget, 51699, true);
+                        else if (Unit * spellTarget = target->ToPlayer()->GetSelectedUnit())
+                            target->CastSpell(spellTarget, 51699, true);
                    break;
                 case 28832: // Mark of Korth'azz
                 case 28833: // Mark of Blaumeux
