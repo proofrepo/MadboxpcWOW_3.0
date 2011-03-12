@@ -930,6 +930,7 @@ void Creature::UpdateDamagePhysical(WeaponAttackType attType)
 #define ENTRY_TREANT            1964
 #define ENTRY_FIRE_ELEMENTAL    15438
 #define ENTRY_GHOUL             26125
+#define ENTRY_FERAL_SPIRIT      29264
 
 bool Guardian::UpdateStats(Stats stat)
 {
@@ -1189,6 +1190,13 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
             if (frost < 0)
                 frost = 0;
             SetBonusDamage(int32(frost * 0.4f));
+        }
+        else if (GetEntry() == ENTRY_FERAL_SPIRIT)
+        {
+            float dmg_multiplier = 0.3f;
+            if (m_owner->GetAuraEffect(63271, 0)) // Glyph of Feral Spirit
+                dmg_multiplier = 0.6f;
+            bonusAP = m_owner->GetTotalAttackPowerValue(BASE_ATTACK) * dmg_multiplier;
         }
     }
 
