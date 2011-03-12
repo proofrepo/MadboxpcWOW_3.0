@@ -4578,10 +4578,15 @@ void Spell::TakeRunePower()
         RuneType rune = plr->GetCurrentRune(i);
         if ((plr->GetRuneCooldown(i) == 0) && (runeCost[rune] > 0))
         {
-            for (std::list<TargetInfo>::iterator ihit= m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
+            if (m_UniqueTargetInfo.empty()) // no target spell (Death and Decay)
+                plr->SetRuneCooldown(i, plr->GetRuneBaseCooldown(i));
+            else
             {
-                switch (ihit->missCondition)
+                // Runes not enter in cooldown on dodged, parried or blocked spells
+                for (std::list<TargetInfo>::iterator ihit = m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
                 {
+                    switch (ihit->missCondition)
+                    {
                     case SPELL_MISS_DODGE:
                     case SPELL_MISS_PARRY:
                     case SPELL_MISS_BLOCK:
@@ -4589,6 +4594,7 @@ void Spell::TakeRunePower()
                     default:
                         plr->SetRuneCooldown(i, plr->GetRuneBaseCooldown(i));
                         break;
+                    }
                 }
             }
             plr->SetLastUsedRune(RuneType(rune));
@@ -4605,10 +4611,15 @@ void Spell::TakeRunePower()
             RuneType rune = plr->GetCurrentRune(i);
             if ((plr->GetRuneCooldown(i) == 0) && (rune == RUNE_DEATH))
             {
-                for (std::list<TargetInfo>::iterator ihit= m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
+                if (m_UniqueTargetInfo.empty()) // no target spell (Death and Decay)
+                    plr->SetRuneCooldown(i, plr->GetRuneBaseCooldown(i));
+                else
                 {
-                    switch (ihit->missCondition)
+                    // Runes not enter in cooldown on dodged, parried or blocked spells
+                    for (std::list<TargetInfo>::iterator ihit = m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
                     {
+                        switch (ihit->missCondition)
+                        {
                         case SPELL_MISS_DODGE:
                         case SPELL_MISS_PARRY:
                         case SPELL_MISS_BLOCK:
@@ -4616,6 +4627,7 @@ void Spell::TakeRunePower()
                         default:
                             plr->SetRuneCooldown(i, plr->GetRuneBaseCooldown(i));
                             break;
+                        }
                     }
                 }
                 plr->SetLastUsedRune(RuneType(rune));
