@@ -1252,6 +1252,10 @@ void Pet::_LoadAuras(uint32 timediff)
             else
                 remaincharges = 0;
 
+            // Infinite Duration Auras need caster_guid to change (Since Pet's GUID changes too)
+            if (maxduration == -1 && caster_guid != GetGUID())
+                caster_guid = GetGUID();
+
             if (Aura * aura = Aura::TryCreate(spellproto, effmask, this, NULL, &baseDamage[0], NULL, caster_guid))
             {
                 if (!aura->CanBeSaved())
