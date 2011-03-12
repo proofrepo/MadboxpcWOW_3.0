@@ -3739,6 +3739,7 @@ void SpellMgr::LoadSpellCustomAttr()
         case 45761: // Shoot
         case 42611: // Shoot
         case 62374: // Pursued
+        case 56397: // Arcane Barrage
             spellInfo->MaxAffectedTargets = 1;
             count++;
             break;
@@ -3762,6 +3763,8 @@ void SpellMgr::LoadSpellCustomAttr()
         case 28542: // Life Drain - Sapphiron
         case 66588: // Flaming Spear
         case 54171: // Divine Storm
+        case 60936: // Surge of Power
+        case 61693: // Arcane Storm
             spellInfo->MaxAffectedTargets = 3;
             count++;
             break;
@@ -3786,6 +3789,7 @@ void SpellMgr::LoadSpellCustomAttr()
         case 40861: // Wicked Beam
         case 54835: // Curse of the Plaguebringer - Noth (H)
         case 54098: // Poison Bolt Volly - Faerlina (H)
+        case 61694: // Arcane Storm
             spellInfo->MaxAffectedTargets = 10;
             count++;
             break;
