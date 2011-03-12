@@ -1411,6 +1411,15 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask, bool 
 
         if (!m_caster->IsFriendlyTo(unit))
         {
+            // spell misses if target has Invisibility or Vanish and isn't visible for caster
+            if (m_spellInfo->speed > 0.0f && unit == m_targets.getUnitTarget()
+                && ((unit->HasInvisibilityAura() || m_caster->HasInvisibilityAura())
+                || unit->HasAuraTypeWithFamilyFlags(SPELL_AURA_MOD_STEALTH, SPELLFAMILY_ROGUE, SPELLFAMILYFLAG_ROGUE_VANISH))
+                && !m_caster->canSeeOrDetect(unit))
+            {
+                return SPELL_MISS_MISS;
+            }
+
             unit->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_HITBYSPELL);
             //TODO: This is a hack. But we do not know what types of stealth should be interrupted by CC
             if ((m_customAttr & SPELL_ATTR0_CU_AURA_CC) && unit->IsControlledByPlayer())
