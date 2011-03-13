@@ -4116,6 +4116,7 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->Effect[1] = 0;
             count++;
             break;
+<<<<<<< HEAD
         case 19970: // Entangling Roots (Rank 6)
         case 19971: // Entangling Roots (Rank 5)
         case 19972: // Entangling Roots (Rank 4)
@@ -4139,6 +4140,10 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->Effect[1] = SPELL_EFFECT_APPLY_AURA;
             spellInfo->EffectApplyAuraName[1] = SPELL_AURA_SPLIT_DAMAGE_PCT;
             spellInfo->EffectMiscValue[1] = 127;
+=======
+        case 51590: // Toss Ice Boulder
+            spellInfo->MaxAffectedTargets = 1;
+>>>>>>> dd2405bd6c7462c934752c6fa6395c15f29f2d13
             count++;
             break;
         default:
