@@ -799,6 +799,11 @@ class spell_gen_profession_research : public SpellScriptLoader
         }
 };
 
+enum ArgentTournamentSpells
+{
+   SPELL_DEFEND = 66482,
+};
+
 // Shield-Breaker 68504
 class spell_gen_npcshieldbreaker : public SpellScriptLoader
 {
@@ -825,11 +830,6 @@ public:
    {
        return new spell_gen_npcshieldbreaker_SpellScript();
    }
-};
-
-enum ArgentTournamentSpells
-{
-   SPELL_DEFEND = 66482,
 };
 
 // Shield-Breaker 62575
