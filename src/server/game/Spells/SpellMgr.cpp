@@ -4170,6 +4170,9 @@ void SpellMgr::LoadSpellCustomAttr()
                 // Entangling Roots
                 else if (spellInfo->SpellFamilyFlags[0] & 0x200 && spellInfo->Attributes & SPELL_ATTR0_CASTABLE_WHILE_SITTING)
                    spellInfo->CastingTimeIndex = 1;
+                // Rake
+                else if (spellInfo->SpellFamilyFlags[0] & 0x1000)
+                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_IGNORE_ARMOR;
                 else
                     break;
                 count++;
