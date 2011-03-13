@@ -1,3 +1,4 @@
+DELETE FROM `spell_script_names` WHERE `spell_id` IN (62575,63010,68504);
 INSERT INTO `spell_script_names` VALUES
 ('62575', 'spell_gen_shieldbreaker'),
 ('63010', 'spell_gen_atcharge'),
@@ -87,7 +88,7 @@ UPDATE `creature_template` SET `mechanic_immune_mask`=805257215 WHERE `entry` IN
 
 -- Spellids fix for mounts 
 UPDATE `creature_template` SET `spell1`=62544, `spell3`=63010 WHERE `entry`IN(35644,36558);
-- Faction of vehicles
+-- Faction of vehicles
 UPDATE `creature_template` SET 
 `Faction_A`=16,
 `Faction_H`=16
