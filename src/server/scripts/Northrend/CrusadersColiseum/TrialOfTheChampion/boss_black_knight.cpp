@@ -61,8 +61,9 @@ enum eSpells
 
     //phase 2 - During this phase, the Black Knight will use the same abilities as in phase 1, except for Death's Respite
     SPELL_ARMY_DEAD         = 67761,
+    SPELL_ARMY_DEAD_H       = 67874,
     SPELL_DESECRATION       = 67778,
-    SPELL_DESECRATION_2     = 67778,
+    SPELL_DESECRATION_2     = 67877,
     SPELL_GHOUL_EXPLODE     = 67751,
 
     //phase 3
@@ -106,7 +107,9 @@ enum Misc
 {
     ACHIEV_WORSE                                  = 3804,
     ACHIEV_HEROIC_DONE_H                          = 4297,
-    ACHIEV_HEROIC_DONE_A                          = 4298
+    ACHIEV_HEROIC_DONE_A                          = 4298,
+    ACHIEV_NORMAL_DONE_H                          = 4296,
+    ACHIEV_NORMAL_DONE_A                          = 3778
 };
 
 class boss_black_knight : public CreatureScript
@@ -239,17 +242,26 @@ public:
                 {
                     if (uiIcyTouchTimer <= uiDiff)
                     {
-                        DoCastVictim(SPELL_ICY_TOUCH);
+                        if (IsHeroic())
+                            DoCastVictim(SPELL_ICY_TOUCH_H);
+                        else
+                            DoCastVictim(SPELL_ICY_TOUCH);
                         uiIcyTouchTimer = urand(5000,7000);
                     } else uiIcyTouchTimer -= uiDiff;
                     if (uiPlagueStrikeTimer <= uiDiff)
                     {
-                        DoCastVictim(SPELL_ICY_TOUCH);
+                        if (IsHeroic())
+                            DoCastVictim(SPELL_PLAGUE_STRIKE);
+                        else
+                            DoCastVictim(SPELL_PLAGUE_STRIKE_2);
                         uiPlagueStrikeTimer = urand(12000,15000);
                     } else uiPlagueStrikeTimer -= uiDiff;
                     if (uiObliterateTimer <= uiDiff)
                     {
-                        DoCastVictim(SPELL_OBLITERATE);
+                        if (IsHeroic())
+                            DoCastVictim(SPELL_OBLITERATE_H);
+                        else
+                            DoCastVictim(SPELL_OBLITERATE);
                         uiObliterateTimer = urand(17000,19000);
                     } else uiObliterateTimer -= uiDiff;
                     switch(uiPhase)
@@ -260,8 +272,13 @@ public:
                             {
                                 if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                                 {
-                                    if (pTarget && pTarget->isAlive())
-                                        DoCast(pTarget,SPELL_DEATH_RESPITE);
+                                    if (pTarget && pTarget->isAlive()) 
+                                    {
+                                        if (IsHeroic())
+                                            DoCast(pTarget,SPELL_DEATH_RESPITE_2);
+                                        else
+                                            DoCast(pTarget,SPELL_DEATH_RESPITE);
+                                    }
                                 }
                                 uiDeathRespiteTimer = urand(15000,16000);
                             } else uiDeathRespiteTimer -= uiDiff;
@@ -273,7 +290,10 @@ public:
                             {
                                 bSummonArmy = true;
                                 me->AddUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
-                                DoCast(me, SPELL_ARMY_DEAD);
+                                if (IsHeroic())
+                                    DoCast(me, SPELL_ARMY_DEAD_H);
+                                else
+                                    DoCast(me, SPELL_ARMY_DEAD);
                             }
                             if (!bDeathArmyDone)
                             {
@@ -288,8 +308,13 @@ public:
                             {
                                 if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                                 {
-                                    if (pTarget && pTarget->isAlive())
-                                        DoCast(pTarget,SPELL_DESECRATION);
+                                    if (pTarget && pTarget->isAlive()) 
+                                    {
+                                        if (IsHeroic())
+                                            DoCast(pTarget,SPELL_DESECRATION_2);
+                                        else 
+                                            DoCast(pTarget,SPELL_DESECRATION);
+                                    }
                                 }
                                 uiDesecration = urand(15000,16000);
                             } else uiDesecration -= uiDiff;
@@ -308,7 +333,10 @@ public:
                 {
                     if (uiDeathBiteTimer <= uiDiff)
                     {
-                        DoCastAOE(SPELL_DEATH_BITE);
+                        if (IsHeroic())
+                            DoCastAOE(SPELL_DEATH_BITE);
+                        else
+                            DoCastAOE(SPELL_DEATH_BITE_H);
                         uiDeathBiteTimer = urand (2000, 4000);
                     } else uiDeathBiteTimer -= uiDiff;
                     if (uiMarkedDeathTimer <= uiDiff)
@@ -316,7 +344,12 @@ public:
                         if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                         {
                             if (pTarget && pTarget->isAlive())
-                                DoCast(pTarget,SPELL_MARKED_DEATH);
+                            {
+                                if (IsHeroic())
+                                    DoCast(pTarget,SPELL_MARKED_DEATH);
+                                else 
+                                    DoCast(pTarget,SPELL_MARKED_DEATH_2);
+                            }
                         }
                         uiMarkedDeathTimer = urand (5000, 7000);
                     } else uiMarkedDeathTimer -= uiDiff;
@@ -385,6 +418,16 @@ public:
                     }else
                     {
                         pInstance->DoCompleteAchievement(ACHIEV_HEROIC_DONE_H);
+                    }
+                }
+                else
+                {
+                    if (pInstance->GetData(DATA_TEAM_IN_INSTANCE) == TEAM_ALLIANCE)
+                    {
+                        pInstance->DoCompleteAchievement(ACHIEV_NORMAL_DONE_A);
+                    }else
+                    {
+                        pInstance->DoCompleteAchievement(ACHIEV_NORMAL_DONE_H);
                     }
                 }
             }
