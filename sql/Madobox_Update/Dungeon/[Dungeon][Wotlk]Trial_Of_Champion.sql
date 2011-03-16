@@ -191,3 +191,7 @@ INSERT INTO `creature` VALUES (200038, 35004, 650, 3, 1, 0, 0, 748.309, 619.488,
 UPDATE `creature_template` SET `faction_A`=84, `faction_H`=84 WHERE `entry`=35644;
 UPDATE `creature_template` SET `faction_A`=83, `faction_H`=83 WHERE `entry`=36558;
 
+-- Stormwind steed template 
+UPDATE `creature_template` SET `rank`=1, `Health_mod`=5, `faction_A`=16, `faction_H`=16, `ScriptName`='generic_vehicleAI_toc5' WHERE `entry`=33217;
+-- Stomwind champion template
+UPDATE `creature_template` SET `unit_flags`=33554434, `AIName`='' WHERE `entry`=35328;

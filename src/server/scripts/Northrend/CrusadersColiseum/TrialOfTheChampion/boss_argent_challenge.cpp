@@ -372,7 +372,7 @@ public:
                 me->InterruptNonMeleeSpells(true);
                 DoCastAOE(SPELL_HOLY_NOVA,false);
                 DoCast(me, SPELL_SHIELD);
-                DoCast(me, SPELL_SUMMON_MEMORY);
+                DoCast(me->getVictim(), SPELL_SUMMON_MEMORY);
                 DoCastAOE(SPELL_CONFESS,false);
                 bHealth = true;
             }

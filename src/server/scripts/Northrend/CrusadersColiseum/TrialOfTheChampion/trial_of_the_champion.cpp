@@ -522,11 +522,20 @@ public:
                 for (uint8 i = 0; i < 3; ++i)
                 {
                     if (Creature* pTrash = me->SummonCreature(NPC_ARGENT_LIGHWIELDER,SpawnPosition))
+                    {
                         pTrash->AI()->SetData(i,0);
+                        pTrash->SetReactState(REACT_AGGRESSIVE);
+                    }
                     if (Creature* pTrash = me->SummonCreature(NPC_ARGENT_MONK,SpawnPosition))
+                    {    
                         pTrash->AI()->SetData(i,0);
+                        pTrash->SetReactState(REACT_AGGRESSIVE);
+                    }       
                     if (Creature* pTrash = me->SummonCreature(NPC_PRIESTESS,SpawnPosition))
+                    {
                         pTrash->AI()->SetData(i,0);
+                        pTrash->SetReactState(REACT_AGGRESSIVE);
+                    }
                 }
             }
         }
