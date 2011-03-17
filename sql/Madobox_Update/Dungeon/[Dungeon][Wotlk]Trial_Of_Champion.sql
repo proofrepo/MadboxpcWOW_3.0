@@ -1,8 +1,9 @@
-DELETE FROM `spell_script_names` WHERE `spell_id` IN (62575,63010,68504);
+DELETE FROM `spell_script_names` WHERE `spell_id` IN (62575,63010,68504,66515);
 INSERT INTO `spell_script_names` VALUES
 ('62575', 'spell_gen_shieldbreaker'),
 ('63010', 'spell_gen_atcharge'),
-('68504', 'spell_gen_npcshieldbreaker');
+('68504', 'spell_gen_npcshieldbreaker'),
+('66515', 'spell_gen_reflective_shield');
 -- Despawn old announcer
 DELETE FROM `creature` WHERE `guid`=200038;
 -- Insert new announcer
@@ -236,14 +237,40 @@ UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask`|1
 35004,-- NPC_JAEREN                   
 35005,-- NPC_ARELAS                 
 35591,-- NPC_JAEREN_AN               
-35592 -- NPC_ARELAS_AN        
+35592,-- NPC_ARELAS_AN 
+-- Memory
+35052,-- MEMORY_ALGALON                
+35041,-- MEMORY_ARCHIMONDE            
+35033,-- MEMORY_CHROMAGGUS            
+35046,-- MEMORY_CYANIGOSA             
+35043,-- MEMORY_DELRISSA              
+35047,-- MEMORY_ECK                   
+35044,-- MEMORY_ENTROPIUS             
+35039,-- MEMORY_GRUUL                 
+35034,-- MEMORY_HAKKAR                
+35049,-- MEMORY_HEIGAN                
+35030,-- MEMORY_HEROD                 
+34942,-- MEMORY_HOGGER                
+35050,-- MEMORY_IGNIS                 
+35042,-- MEMORY_ILLIDAN               
+35045,-- MEMORY_INGVAR                
+35037,-- MEMORY_KALITHRESH            
+35031,-- MEMORY_LUCIFRON              
+35038,-- MEMORY_MALCHEZAAR            
+35029,-- MEMORY_MUTANUS               
+35048,-- MEMORY_ONYXIA                
+35032,-- MEMORY_THUNDERAAN            
+35028,-- MEMORY_VANCLEEF              
+35040,-- MEMORY_VASHJ                 
+35036,-- MEMORY_VEKNILASH             
+35051 -- MEMORY_VEZAX                        
 );    
       
 -- Update Dmg 
 UPDATE `creature_template` SET `dmg_multiplier`='15' WHERE `dmg_multiplier`='7.5' AND `entry` IN (34994, 34995, 34990, 34992, 34996, 35004, 35572, 35569, 35571, 35570, 35617, 34705, 34702, 34701, 34657, 34703, 35314, 35326, 35325, 35323, 35327, 35328, 35331, 35330, 35332, 35329, 35119, 34928, 35309, 35305, 35307, 35451, 35545, 35564, 35004, 35005, 35591, 35592);
 UPDATE `creature_template` SET `dmg_multiplier`='15' WHERE `dmg_multiplier`='1'AND `entry` IN (34994, 34995, 34990, 34992, 34996, 35004, 35572, 35569, 35571, 35570, 35617, 34705, 34702, 34701, 34657, 34703, 35314, 35326, 35325, 35323, 35327, 35328, 35331, 35330, 35332, 35329, 35119, 34928, 35309, 35305, 35307, 35451, 35545, 35564, 35004, 35005, 35591, 35592);
 UPDATE `creature_template` SET `dmg_multiplier`='38' WHERE `dmg_multiplier`='35' AND `entry` IN (34994, 34995, 34990, 34992, 34996, 35004, 35572, 35569, 35571, 35570, 35617, 34705, 34702, 34701, 34657, 34703, 35314, 35326, 35325, 35323, 35327, 35328, 35331, 35330, 35332, 35329, 35119, 34928, 35309, 35305, 35307, 35451, 35545, 35564, 35004, 35005, 35591, 35592);
-UPDATE`creature_template`SET`mindmg`='422', `maxdmg`='586' WHERE `entry`=35591 LIMIT 1 ;
+UPDATE `creature_template` SET `mindmg`='422', `maxdmg`='586' WHERE `entry`=35591;
 
--- binds instance Normal - Heroic
+-- Binds instance Normal - Heroic
 -- UPDATE `creature_template` SET `flags_extra` = 1 WHERE `entry` IN (35617, 35571, 35569, 36085, 36090, 36084, 34928, 35451, 35517, 35490);
