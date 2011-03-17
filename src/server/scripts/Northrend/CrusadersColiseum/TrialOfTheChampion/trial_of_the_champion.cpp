@@ -745,8 +745,100 @@ public:
     }
 };
 
+enum ArgentTournamentSpells
+{
+    SPELL_DEFEND = 66482,
+};
+
+// Shield-Breaker 62575
+class spell_gen_shieldbreaker : public SpellScriptLoader
+{
+public:
+    spell_gen_shieldbreaker() : SpellScriptLoader("spell_gen_shieldbreaker") { }
+
+    class spell_gen_shieldbreaker_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_gen_shieldbreaker_SpellScript)
+
+        void HandleScript(SpellEffIndex /*effIndex*/)
+        {
+            if (Unit * target = GetHitUnit())
+                target->RemoveAuraFromStack(SPELL_DEFEND);
+        }
+
+        void Register()
+        {
+            OnEffect += SpellEffectFn(spell_gen_shieldbreaker_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_gen_shieldbreaker_SpellScript();
+    }
+};
+
+// Charge 63010
+class spell_gen_atcharge : public SpellScriptLoader
+{
+public:
+    spell_gen_atcharge() : SpellScriptLoader("spell_gen_atcharge") { }
+
+    class spell_gen_atcharge_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_gen_atcharge_SpellScript)
+
+        void HandleScript(SpellEffIndex /*effIndex*/)
+        {
+            if (Unit * target = GetHitUnit())
+                target->RemoveAuraFromStack(SPELL_DEFEND);
+        }
+
+        void Register()
+        {
+            OnEffect += SpellEffectFn(spell_gen_atcharge_SpellScript::HandleScript, EFFECT_2, SPELL_EFFECT_SCRIPT_EFFECT);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_gen_atcharge_SpellScript();
+    }
+};
+
+// Shield-Breaker 68504
+class spell_gen_npcshieldbreaker : public SpellScriptLoader
+{
+public:
+    spell_gen_npcshieldbreaker() : SpellScriptLoader("spell_gen_npcshieldbreaker") { }
+
+    class spell_gen_npcshieldbreaker_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_gen_npcshieldbreaker_SpellScript)
+
+        void HandleScript(SpellEffIndex /*effIndex*/)
+        {
+            if (Unit * target = GetHitUnit())
+                target->RemoveAuraFromStack(SPELL_DEFEND);
+        }
+
+        void Register()
+        {
+            OnEffect += SpellEffectFn(spell_gen_npcshieldbreaker_SpellScript::HandleScript, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_gen_npcshieldbreaker_SpellScript();
+    }
+};
+
 void AddSC_trial_of_the_champion()
 {
     new npc_anstart();
     new npc_announcer_toc5();
+    new spell_gen_shieldbreaker();
+    new spell_gen_atcharge();
+    new spell_gen_npcshieldbreaker();
 }

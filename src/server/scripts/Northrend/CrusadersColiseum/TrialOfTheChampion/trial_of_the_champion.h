@@ -97,7 +97,34 @@ enum eNpcs
     
     // Announcer
     NPC_JAEREN_AN               = 35591,
-    NPC_ARELAS_AN               = 35592
+    NPC_ARELAS_AN               = 35592,
+
+    // Memory
+    MEMORY_ALGALON              = 35052,
+    MEMORY_ARCHIMONDE           = 35041,
+    MEMORY_CHROMAGGUS           = 35033,
+    MEMORY_CYANIGOSA            = 35046,
+    MEMORY_DELRISSA             = 35043,
+    MEMORY_ECK                  = 35047,
+    MEMORY_ENTROPIUS            = 35044,
+    MEMORY_GRUUL                = 35039,
+    MEMORY_HAKKAR               = 35034,
+    MEMORY_HEIGAN               = 35049,
+    MEMORY_HEROD                = 35030,
+    MEMORY_HOGGER               = 34942,
+    MEMORY_IGNIS                = 35050,
+    MEMORY_ILLIDAN              = 35042,
+    MEMORY_INGVAR               = 35045,
+    MEMORY_KALITHRESH           = 35037,
+    MEMORY_LUCIFRON             = 35031,
+    MEMORY_MALCHEZAAR           = 35038,
+    MEMORY_MUTANUS              = 35029,
+    MEMORY_ONYXIA               = 35048,
+    MEMORY_THUNDERAAN           = 35032,
+    MEMORY_VANCLEEF             = 35028,
+    MEMORY_VASHJ                = 35040,
+    MEMORY_VEKNILASH            = 35036,
+    MEMORY_VEZAX                = 35051
 };
 
 enum eGameObjects
