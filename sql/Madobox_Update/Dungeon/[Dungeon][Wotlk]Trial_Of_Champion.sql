@@ -246,4 +246,4 @@ UPDATE `creature_template` SET `dmg_multiplier`='38' WHERE `dmg_multiplier`='35'
 UPDATE`creature_template`SET`mindmg`='422', `maxdmg`='586' WHERE `entry`=35591 LIMIT 1 ;
 
 -- binds instance Normal - Heroic
-UPDATE `creature_template` SET `flags_extra` = 1 WHERE `entry` IN (35617, 35571, 35569, 36085, 36090, 36084, 34928, 35451, 35517, 35490);
+-- UPDATE `creature_template` SET `flags_extra` = 1 WHERE `entry` IN (35617, 35571, 35569, 36085, 36090, 36084, 34928, 35451, 35517, 35490);
