@@ -245,3 +245,5 @@ UPDATE `creature_template` SET `dmg_multiplier`='15' WHERE `dmg_multiplier`='1'A
 UPDATE `creature_template` SET `dmg_multiplier`='38' WHERE `dmg_multiplier`='35' AND `entry` IN (34994, 34995, 34990, 34992, 34996, 35004, 35572, 35569, 35571, 35570, 35617, 34705, 34702, 34701, 34657, 34703, 35314, 35326, 35325, 35323, 35327, 35328, 35331, 35330, 35332, 35329, 35119, 34928, 35309, 35305, 35307, 35451, 35545, 35564, 35004, 35005, 35591, 35592);
 UPDATE`creature_template`SET`mindmg`='422', `maxdmg`='586' WHERE `entry`=35591 LIMIT 1 ;
 
+-- binds instance Normal - Heroic
+-- UPDATE `creature_template` SET `flags_extra` = 1 WHERE `entry` IN (35617, 35571, 35569, 36085, 36090, 36084, 34928, 35451, 35517, 35490);
