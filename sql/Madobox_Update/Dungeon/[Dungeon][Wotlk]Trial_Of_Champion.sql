@@ -94,6 +94,8 @@ UPDATE `creature_template` SET
 `Faction_A`=16,
 `Faction_H`=16
 WHERE `entry` IN (33324, 33321, 33322, 33320, 33323, 33319, 33318, 33317, 33316, 33324);
+-- Current health for mounts
+UPDATE `creature` SET `curhealth` = 50000 WHERE `id` IN (35644, 36558); 
 
 -- Scriptname of all Memories of boss "Argent Confessor Paletress"
 UPDATE `creature_template` SET `scriptname`='npc_memory' WHERE `name` LIKE 'Memory of %';
