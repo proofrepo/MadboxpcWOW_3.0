@@ -65,10 +65,10 @@ enum eSpells
 {
     // phase 1
     SPELL_IRIS_VISUAL                        = 61012,
-    SPELL_ARCANE_BREATH_N                    = 56272,
-    SPELL_ARCANE_BREATH_H                    = 60072,
-    SPELL_ARCANE_STORM_N                     = 61693,
-    SPELL_ARCANE_STORM_H                     = 61694,
+    SPELL_ARCANE_BREATH_10                   = 56272,
+    SPELL_ARCANE_BREATH_25                   = 60072,
+    SPELL_ARCANE_STORM_10                    = 61693,
+    SPELL_ARCANE_STORM_25                    = 61694,
     SPELL_VORTEX                             = 56105,
     SPELL_VORTEX_VISUAL                      = 55873,
     SPELL_VORTEX_PLAYER                      = 55853,
@@ -82,8 +82,8 @@ enum eSpells
     SPELL_ARCANE_OVERLOAD                    = 56432,
     SPELL_DEEP_BREATH                        = 56505,
 
-    SPELL_ARCANE_SHOCK_N                     = 57058,
-    SPELL_ARCANE_SHOCK_H                     = 60073,
+    SPELL_ARCANE_SHOCK_10                    = 57058,
+    SPELL_ARCANE_SHOCK_25                    = 60073,
     SPELL_HASTE                              = 57060,
     SPELL_ARCANE_BARRAGE                     = 56397,
     SPELL_ARCANE_BARRAGE_DMG                 = 63934,
@@ -91,14 +91,13 @@ enum eSpells
     SPELL_DESTROY_PLATFORM_CHANNEL           = 58842,
     SPELL_DESTROY_PLATFORM_BOOM              = 59084,
     SPELL_DESTROY_PLATFORM_EVENT             = 59099,
-    //SPELL_SUMMON_RED_DRAGON_BUDDY            = 56070,
 
     // phase 3
     SPELL_ARCANE_PULSE                       = 57432,
     SPELL_STATIC_FIELD                       = 57428,
     SPELL_STATIC_FIELD_MISSLE                = 57430,
-    SPELL_SURGE_OF_POWER_N                   = 57407,
-    SPELL_SURGE_OF_POWER_H                   = 60936,
+    SPELL_SURGE_OF_POWER_10                  = 57407,
+    SPELL_SURGE_OF_POWER_25                  = 60936,
 
     SPELL_ALEXSTRASZAS_GIFT_VISUAL           = 61023,
     SPELL_ALEXSTRASZAS_GIFT_BEAM             = 61028,
@@ -124,7 +123,9 @@ enum eAction
     ACTION_OVERLOAD     = 3,
     ACTION_DEEP_BREATH  = 4,
     ACTION_SPAWN_ADDS   = 5,
-    ACTION_MOUNT_ALL    = 6
+    ACTION_MOUNT_ALL    = 6,
+    ACTION_CAST_SURGE   = 7,
+    ACTION_CLEAR_PLR    = 8
 };
 
 enum eMovePoints
@@ -166,6 +167,7 @@ static Position LordLocations[]=
 };
 
 #define FLOOR_Z           268.17f
+#define WHISPER_SURGE     "Malygos fixes his eyes on you."
 
 class boss_malygos : public CreatureScript
 {
@@ -247,6 +249,7 @@ public:
         void JustReachedHome()
         {
             Reset();
+            me->setActive(false); // needed?
         }
 
         void JustSummoned(Creature *summon)
@@ -254,6 +257,7 @@ public:
             switch (summon->GetEntry())
             {
                 case NPC_POWER_SPARK:
+                    summon->setActive(true);
                     SparkList.insert(summon->GetGUID());
                     break;
                 case NPC_STATIC_FIELD:
@@ -320,7 +324,8 @@ public:
             if (uiPhase != PHASE_GROUND || pWho->GetTypeId() != TYPEID_UNIT)
                 return;
 
-            if (pWho->GetEntry() == NPC_POWER_SPARK && me->GetDistance(pWho) < 5.0f && !pWho->HasAura(SPELL_POWER_SPARK_PLAYERS))
+            if (pWho->GetEntry() == NPC_POWER_SPARK && pWho->GetExactDist(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()) < 8.0f
+                && !pWho->HasAura(SPELL_POWER_SPARK_PLAYERS))
             {
                 DoCast(SPELL_POWER_SPARK);
                 DoScriptText(SAY_SPARK_BUFFED, me);
@@ -334,6 +339,7 @@ public:
             {
                 case ACTION_START:
                 {
+                    me->setActive(true);
                     me->SetInCombatWithZone();
                     me->GetMotionMaster()->MovePoint(POINT_START, Locations[0]);
 
@@ -371,9 +377,9 @@ public:
                     {
                         DoScriptText(SAY_SPARK_SUMMON, me);
                         pSpark->SetFlying(true);
+                        pSpark->SetSpeed(MOVE_FLIGHT, 0.8f);
                         pSpark->SetReactState(REACT_PASSIVE);
                         pSpark->SetInCombatWithZone();
-                        pSpark->GetMotionMaster()->MoveFollow(me, 0.0f, 0.0f);
                     }
                     break;
                 }
@@ -391,6 +397,7 @@ public:
                         pOverload->AddUnitState(UNIT_STAT_ROOT);
                         pOverload->SetReactState(REACT_PASSIVE);
                         pOverload->SetInCombatWithZone();
+                        pOverload->GetMotionMaster()->MoveIdle();
                         DoCast(pOverload, SPELL_ARCANE_BOMB, true);
                     }
                     break;
@@ -466,6 +473,41 @@ public:
                     me->SetInCombatWithZone();
                     break;
                 }
+                case ACTION_CAST_SURGE:
+                {
+                    if (Unit* pTarget = SelectVehicleBaseOrPlayer())
+                    {
+                        if (!urand(0, 2))
+                            DoScriptText(SAY_SURGE_OF_POWER, me);
+
+                        if (Player* pPlayer = pTarget->GetCharmerOrOwnerPlayerOrPlayerItself())
+                            me->MonsterWhisper(WHISPER_SURGE, pPlayer->GetGUID(), true);
+                        DoCast(pTarget, RAID_MODE(SPELL_SURGE_OF_POWER_10, SPELL_SURGE_OF_POWER_25));
+                    }
+                    break;
+                }
+                case ACTION_CLEAR_PLR:
+                {
+                    /* workaround to prevent players from falling through map in alive state (once they got unmounted) */
+                    Map *map = me->GetMap();
+                    if (!map->IsDungeon())
+                        return;
+
+                    Map::PlayerList const &PlayerList = map->GetPlayers();
+                    for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+                    {
+                        Player* i_pl = i->getSource();
+                        if (i_pl && !i_pl->isGameMaster() && i_pl->isAlive())
+                        {
+                            if (!i_pl->GetVehicle())
+                            {
+                                i_pl->SetFlying(true);
+                                me->Kill(i_pl, false);
+                            }
+                        }
+                    }
+                    break;
+                }
                 default:
                     break;
             }
@@ -477,16 +519,16 @@ public:
                 return;
 
             for (std::set<uint64>::const_iterator itr = SparkList.begin(); itr != SparkList.end(); ++itr)
-                if (Unit* pSpark = me->GetUnit(*me, *itr))
+                if (Creature* pSpark = me->GetCreature(*me, *itr))
                 {
                     // spark already "dead"
                     if (pSpark->HasAura(SPELL_POWER_SPARK_PLAYERS))
                         continue;
 
                     if (move)
-                        pSpark->GetMotionMaster()->MoveFollow(me, 0.0f, 0.0f);
+                        pSpark->AI()->DoAction(1);
                     else
-                        pSpark->GetMotionMaster()->Clear();
+                        pSpark->AI()->DoAction(0);
 
                     // remove remaining free sparks
                     if (uiPhase == PHASE_ADDS)
@@ -568,6 +610,7 @@ public:
                     DoCast(me, SPELL_ROOT, true);
                     uiSurgeOfPowerTimer = 10*IN_MILLISECONDS;
                     uiStormTimer = 15*IN_MILLISECONDS;
+                    uiWaitTimer = 1*IN_MILLISECONDS;
                     uiPhase = PHASE_DRAGONS;
                     break;
                 }
@@ -582,6 +625,7 @@ public:
             {
                 target->CastSpell(target, SPELL_ARCANE_BOMB_KNOCKBACK, true);
                 target->CastSpell(target, SPELL_ARCANE_OVERLOAD, true);
+                target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
             }
         }
 
@@ -639,7 +683,7 @@ public:
  
                     if (uiStormTimer <= uiDiff)
                     {
-                        DoCast(me, RAID_MODE(SPELL_ARCANE_STORM_N, SPELL_ARCANE_STORM_H), true);
+                        DoCast(me, RAID_MODE(SPELL_ARCANE_STORM_10, SPELL_ARCANE_STORM_25), true);
                         uiStormTimer = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
                     } else uiStormTimer -= uiDiff;
 
@@ -651,7 +695,7 @@ public:
 
                     if (uiArcaneBreathTimer <= uiDiff)
                     {
-                        DoCast(me->getVictim(), RAID_MODE(SPELL_ARCANE_BREATH_N, SPELL_ARCANE_BREATH_H));
+                        DoCast(me->getVictim(), RAID_MODE(SPELL_ARCANE_BREATH_10, SPELL_ARCANE_BREATH_25));
                         uiArcaneBreathTimer = 20*IN_MILLISECONDS;
                     } else uiArcaneBreathTimer -= uiDiff;
 
@@ -743,21 +787,15 @@ public:
                         {
                             if (!urand(0, 2))
                                 DoScriptText(RAND(SAY_PHASE3_CAST_1, SAY_PHASE3_CAST_2, SAY_PHASE3_CAST_3), me);
-                            DoCast(me, RAID_MODE(SPELL_ARCANE_STORM_N, SPELL_ARCANE_STORM_H));
-                            uiStormTimer = urand(8*IN_MILLISECONDS, 12*IN_MILLISECONDS);
+                            DoCast(me, RAID_MODE(SPELL_ARCANE_STORM_10, SPELL_ARCANE_STORM_25));
+                            uiStormTimer = urand(7*IN_MILLISECONDS, 10*IN_MILLISECONDS);
                         }
                     } else uiStormTimer -= uiDiff;
 
-                    // TODO: check timer
                     if (uiSurgeOfPowerTimer <= uiDiff)
                     {
-                        if (Unit* pTarget = SelectVehicleBaseOrPlayer())
-                        {
-                            if (!urand(0, 2))
-                                DoScriptText(SAY_SURGE_OF_POWER, me);
-                            DoCast(pTarget, RAID_MODE(SPELL_SURGE_OF_POWER_N, SPELL_SURGE_OF_POWER_H));
-                        }
-                        uiSurgeOfPowerTimer = urand(12*IN_MILLISECONDS, 16*IN_MILLISECONDS);
+                        DoAction(ACTION_CAST_SURGE);
+                        uiSurgeOfPowerTimer = 10*IN_MILLISECONDS;
                     } else uiSurgeOfPowerTimer -= uiDiff;
 
                     if (uiArcanePulseTimer <= uiDiff)
@@ -779,6 +817,13 @@ public:
                             uiStaticFieldTimer = 25*IN_MILLISECONDS;
                         }
                     } else uiStaticFieldTimer -= uiDiff;
+
+                    if (uiWaitTimer <= uiDiff)
+                    {
+                        DoAction(ACTION_CLEAR_PLR);
+                        uiWaitTimer = 1*IN_MILLISECONDS;
+                    } else uiWaitTimer -= uiDiff;
+                    
                     break;
                 }
                 case PHASE_IDLE:
@@ -903,7 +948,7 @@ public:
 
             if (uiArcaneShockTimer <= uiDiff)
             {
-                DoCast(me->getVictim(), RAID_MODE(SPELL_ARCANE_SHOCK_N, SPELL_ARCANE_SHOCK_H));
+                DoCast(me->getVictim(), RAID_MODE(SPELL_ARCANE_SHOCK_10, SPELL_ARCANE_SHOCK_25));
                 uiArcaneShockTimer = urand(5*IN_MILLISECONDS, 10*IN_MILLISECONDS);
             } else uiArcaneShockTimer -= uiDiff;
 
@@ -1005,7 +1050,9 @@ public:
                     case 4:
                     {
                         DoScriptText(SAY_OUTRO_3, me);
-                        me->SummonGameObject(RAID_MODE(GO_ALEXSTRASZAS_GIFT, GO_ALEXSTRASZAS_GIFT_H), Locations[5].GetPositionX(),
+                        me->SummonGameObject(RAID_MODE(GO_ALEXSTRASZAS_GIFT_10, GO_ALEXSTRASZAS_GIFT_25), Locations[5].GetPositionX(),
+                            Locations[5].GetPositionY(), Locations[5].GetPositionZ(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0);
+                        me->SummonGameObject(RAID_MODE(GO_HEART_OF_MAGIC_10, GO_HEART_OF_MAGIC_25), Locations[5].GetPositionX() + 15.0f,
                             Locations[5].GetPositionY(), Locations[5].GetPositionZ(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0);
 
                         if (m_pInstance)
@@ -1039,11 +1086,35 @@ public:
 
     struct npc_power_sparkAI : public ScriptedAI
     {
-        npc_power_sparkAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+        npc_power_sparkAI(Creature* pCreature) : ScriptedAI(pCreature)
+        {
+            m_pInstance = pCreature->GetInstanceScript();
+        }
+
+        InstanceScript* m_pInstance;
+
+        uint32 uiTimer;
+        bool canMove;
 
         void Reset()
         {
+            canMove = true;
+            uiTimer = 1*IN_MILLISECONDS;
             DoCast(me, SPELL_POWER_SPARK_VISUAL, true);
+        }
+
+        void DoAction(const int32 param)
+        {
+            if (param == 1)
+            {
+                canMove = true;
+            }
+            else
+            {
+                me->SetSpeed(MOVE_FLIGHT, 1.2f);
+                me->GetMotionMaster()->Clear();
+                canMove = false;
+            }
         }
 
         void DamageTaken(Unit * /* DoneBy */, uint32 &uiDamage)
@@ -1060,6 +1131,20 @@ public:
                 me->GetMotionMaster()->MoveFall(FLOOR_Z); // TODO: really remove fly state
                 me->ForcedDespawn(60*IN_MILLISECONDS);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            }
+        }
+
+        void UpdateAI(const uint32 uiDiff)
+        {
+            if (canMove && me->CanFreeMove())
+            {
+                if (uiTimer <= uiDiff)
+                {
+                    if (Creature* pMalygos = Unit::GetCreature(*me, m_pInstance ? m_pInstance->GetData64(DATA_MALYGOS) : 0))
+                        me->GetMotionMaster()->MovePoint(0, pMalygos->GetPositionX(), pMalygos->GetPositionY(), pMalygos->GetPositionZ());
+                    
+                    uiTimer = 1*IN_MILLISECONDS;
+                } else uiTimer -= uiDiff;
             }
         }
     };
