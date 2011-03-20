@@ -136,13 +136,11 @@ class CreatureAI : public UnitAI
         // Called at reaching home after evade
         virtual void JustReachedHome() {}
 
-<<<<<<< HEAD
+
         void DoAttackerAreaInCombat(Unit* attacker, float range, Unit* pUnit = NULL);
-        void DoZoneInCombat(Creature* pUnit = NULL);
         void DoAttackerGroupInCombat(Player* attacker);
-=======
         void DoZoneInCombat(Creature* creature = NULL);
->>>>>>> 606c8909605d67ae5dc9290c612188140099d72e
+
 
         // Called at text emote receive from player
         virtual void ReceiveEmote(Player* /*player*/, uint32 /*emoteId*/) {}

@@ -1094,10 +1094,6 @@ void Guardian::UpdateMaxHealth()
         case ENTRY_SUCCUBUS:    multiplicator = 9.1f;   break;
         case ENTRY_FELHUNTER:   multiplicator = 9.5f;   break;
         case ENTRY_FELGUARD:    multiplicator = 11.0f;  break;
-<<<<<<< HEAD
-        case ENTRY_GHOUL:       multiplicator = 10.0f;  break;
-=======
->>>>>>> 606c8909605d67ae5dc9290c612188140099d72e
         default:                multiplicator = 10.0f;  break;
     }
 

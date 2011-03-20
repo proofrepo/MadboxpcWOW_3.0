@@ -14545,23 +14545,11 @@ Unit* Unit::SelectNearbyTarget(float dist) const
     if (getVictim())
         targets.remove(getVictim());
 
-<<<<<<< HEAD
-    // remove not LoS targets, Totems and Critters
-    for (std::list<Unit *>::iterator tIter = targets.begin(); tIter != targets.end();)
-    {
-        if (!IsWithinLOSInMap(*tIter) || (*tIter)->isTotem() || (*tIter)->GetCreatureType() == CREATURE_TYPE_CRITTER)
-        {
-            std::list<Unit *>::iterator tIter2 = tIter;
-            ++tIter;
-            targets.erase(tIter2);
-        }
-=======
     // remove not LoS targets
     for (std::list<Unit*>::iterator tIter = targets.begin(); tIter != targets.end();)
     {
         if (!IsWithinLOSInMap(*tIter) || (*tIter)->isTotem() || (*tIter)->isSpiritService() || (*tIter)->GetCreatureType() == CREATURE_TYPE_CRITTER)
             targets.erase(tIter++);
->>>>>>> 606c8909605d67ae5dc9290c612188140099d72e
         else
             ++tIter;
     }
