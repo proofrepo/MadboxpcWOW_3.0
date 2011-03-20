@@ -62,3 +62,5 @@ INSERT INTO `npc_spellclick_spells` (`npc_entry`,`spell_id`,`quest_start`,`quest
 DELETE FROM `spell_script_names` WHERE `spell_id`=60936;
 INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES
 (60936, 'spell_surge_of_power_targeting');
+-- Portal Entrance
+UPDATE `areatrigger_teleport` SET `target_position_x` = 2735.745850, `target_position_y` = 1321.490356, `target_position_z` = 266.171051, `target_orientation` = 5.414711 WHERE `id` = 5290 AND `name`LIKE'%The Eye of Eternity (entrance)%';
