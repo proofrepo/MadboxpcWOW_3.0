@@ -3766,7 +3766,7 @@ void SpellMgr::LoadSpellCustomAttr()
         case 28542: // Life Drain - Sapphiron
         case 66588: // Flaming Spear
         case 54171: // Divine Storm
-        case 60936: // Surge of Power
+        case 60939: // Surge of Power
         case 61693: // Arcane Storm
             spellInfo->MaxAffectedTargets = 3;
             count++;
