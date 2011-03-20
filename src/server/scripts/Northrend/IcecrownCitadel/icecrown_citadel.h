@@ -15,10 +15,18 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEF_ICECROWN_CITADEL_H
-#define DEF_ICECROWN_CITADEL_H
+#ifndef ICECROWN_CITADEL_H_
+#define ICECROWN_CITADEL_H_
+
+#include "SpellScript.h"
 
 #define ICCScriptName "instance_icecrown_citadel"
+
+uint32 const EncounterCount = 12;
+uint32 const WeeklyNPCs = 7;
+uint32 const MaxHeroicAttempts = 50;
+// Defined in boss_sindragosa.cpp
+extern Position const SindragosaSpawnPos;
 
 // Shared spells used by more than one script
 enum SharedSpells
@@ -39,7 +47,7 @@ enum TeleporterSpells
     DEATHBRINGER_S_RISE_TELEPORT    = 70858,
     UPPER_SPIRE_TELEPORT            = 70859,
     FROZEN_THRONE_TELEPORT          = 70860,
-    SINDRAGOSA_S_LAIR_TELEPORT      = 70861
+    SINDRAGOSA_S_LAIR_TELEPORT      = 70861,
 };
 
 enum DataTypes
@@ -77,9 +85,6 @@ enum DataTypes
     DATA_BLOOD_QUICKENING_STATE     = 27,
     DATA_HEROIC_ATTEMPTS            = 28,
 };
-
-#define MAX_ENCOUNTER 12
-#define WEEKLY_NPCS   7
 
 enum CreaturesIds
 {
@@ -324,7 +329,45 @@ enum WorldStatesICC
     WORLDSTATE_ATTEMPTS_MAX         = 4942,
 };
 
-// Declaration
-extern Position const SindragosaSpawnPos;
+class spell_trigger_spell_from_caster : public SpellScriptLoader
+{
+    public:
+        spell_trigger_spell_from_caster(char const* scriptName, uint32 triggerId) : SpellScriptLoader(scriptName), _triggerId(triggerId) { }
 
-#endif // DEF_ICECROWN_CITADEL_H
+        class spell_trigger_spell_from_caster_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_trigger_spell_from_caster_SpellScript);
+
+        public:
+            spell_trigger_spell_from_caster_SpellScript(uint32 triggerId) : SpellScript(), _triggerId(triggerId) { }
+
+            bool Validate(SpellEntry const* /*spell*/)
+            {
+                if (!sSpellStore.LookupEntry(_triggerId))
+                    return false;
+                return true;
+            }
+
+            void HandleTrigger()
+            {
+                GetCaster()->CastSpell(GetHitUnit(), _triggerId, true);
+            }
+
+            void Register()
+            {
+                AfterHit += SpellHitFn(spell_trigger_spell_from_caster_SpellScript::HandleTrigger);
+            }
+
+            uint32 _triggerId;
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_trigger_spell_from_caster_SpellScript(_triggerId);
+        }
+
+    private:
+        uint32 _triggerId;
+};
+
+#endif // ICECROWN_CITADEL_H_

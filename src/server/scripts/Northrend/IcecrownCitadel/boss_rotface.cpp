@@ -18,7 +18,6 @@
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
-#include "SpellScript.h"
 #include "SpellAuras.h"
 #include "icecrown_citadel.h"
 
@@ -74,7 +73,6 @@ enum Events
     EVENT_MORTAL_WOUND      = 5,
 
     EVENT_STICKY_OOZE       = 6,
-    EVENT_UNSTABLE_DESPAWN  = 7,
 };
 
 class boss_rotface : public CreatureScript
@@ -234,7 +232,7 @@ class boss_rotface : public CreatureScript
 
         private:
             uint32 infectionCooldown;
-            uint8 infectionStage;
+            uint32 infectionStage;
         };
 
         CreatureAI* GetAI(Creature* creature) const
@@ -330,13 +328,6 @@ class npc_big_ooze : public CreatureScript
             {
                 if (action == EVENT_STICKY_OOZE)
                     events.CancelEvent(EVENT_STICKY_OOZE);
-                else if (action == EVENT_UNSTABLE_DESPAWN)
-                {
-                    me->RemoveAllAuras();
-                    me->SetVisible(false);
-                    events.Reset();
-                    events.ScheduleEvent(EVENT_UNSTABLE_DESPAWN, 60000);
-                }
             }
 
             void UpdateAI(const uint32 diff)
@@ -353,10 +344,6 @@ class npc_big_ooze : public CreatureScript
                         case EVENT_STICKY_OOZE:
                             DoCastVictim(SPELL_STICKY_OOZE);
                             events.ScheduleEvent(EVENT_STICKY_OOZE, 15000);
-                            break;
-                        case EVENT_UNSTABLE_DESPAWN:
-                            me->Kill(me);
-                            break;
                         default:
                             break;
                     }
@@ -707,7 +694,9 @@ class spell_rotface_unstable_ooze_explosion_suicide : public SpellScriptLoader
                 if (target->GetTypeId() != TYPEID_UNIT)
                     return;
 
-                target->ToCreature()->AI()->DoAction(EVENT_UNSTABLE_DESPAWN);
+                target->RemoveAllAuras();
+                target->SetVisible(false);
+                target->ToCreature()->DespawnOrUnsummon(60000);
             }
 
             void Register()

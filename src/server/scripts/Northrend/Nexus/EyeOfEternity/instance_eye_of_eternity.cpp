@@ -80,8 +80,8 @@ public:
                 case GO_EXIT_PORTAL:
                     uiExitPortalGUID = go->GetGUID();
                     break;
-                case GO_FOCUSING_IRIS:
-                case GO_FOCUSING_IRIS_H:
+                case GO_FOCUSING_IRIS_10:
+                case GO_FOCUSING_IRIS_25:
                     uiFocusingIrisGUID = go->GetGUID();
                     if (auiEncounter[0] == DONE)
                         go->SetPhaseMask(2, true);

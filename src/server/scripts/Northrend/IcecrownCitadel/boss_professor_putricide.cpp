@@ -18,7 +18,6 @@
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
-#include "SpellScript.h"
 #include "SpellAuraEffects.h"
 #include "Group.h"
 #include "Spell.h"
@@ -1436,8 +1435,7 @@ class spell_stinky_precious_decimate : public SpellScriptLoader
                 if (GetHitUnit()->GetHealthPct() > float(GetEffectValue()))
                 {
                     uint32 newHealth = GetHitUnit()->GetMaxHealth() * uint32(GetEffectValue()) / 100;
-                    if (GetHitUnit()->GetMaxHealth() >= newHealth)
-                        GetHitUnit()->SetHealth(newHealth);
+                    GetHitUnit()->SetHealth(newHealth);
                 }
             }
 
