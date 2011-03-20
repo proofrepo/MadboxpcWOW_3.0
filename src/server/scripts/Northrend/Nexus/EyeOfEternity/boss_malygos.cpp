@@ -478,7 +478,7 @@ public:
                     if (!urand(0, 2))
                         DoScriptText(SAY_SURGE_OF_POWER, me);
 
-                    if (getDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
+                    if (GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
                     {
                         if (Unit* target = SelectVehicleBaseOrPlayer())
                         {
