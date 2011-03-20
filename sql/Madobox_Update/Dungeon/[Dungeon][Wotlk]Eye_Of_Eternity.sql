@@ -59,3 +59,6 @@ DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (30234);
 INSERT INTO `npc_spellclick_spells` (`npc_entry`,`spell_id`,`quest_start`,`quest_start_active`,`quest_end`,`cast_flags`,`aura_required`,`aura_forbidden`,`user_type`) VALUES
 (30234,46598,0,0,0,1,0,0,0); -- malygos player disc
 
+DELETE FROM `spell_script_names` WHERE `spell_id`=60936;
+INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES
+(60936, 'spell_surge_of_power_targeting');

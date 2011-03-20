@@ -98,6 +98,7 @@ enum eSpells
     SPELL_STATIC_FIELD_MISSLE                = 57430,
     SPELL_SURGE_OF_POWER_10                  = 57407,
     SPELL_SURGE_OF_POWER_25                  = 60936,
+    SPELL_SURGE_OF_POWER_25_MARKER           = 60939,
 
     SPELL_ALEXSTRASZAS_GIFT_VISUAL           = 61023,
     SPELL_ALEXSTRASZAS_GIFT_BEAM             = 61028,
@@ -245,11 +246,10 @@ public:
             }
         }
 
-        // try to fix bad reset (due to grid issues)?
         void JustReachedHome()
         {
             Reset();
-            me->setActive(false); // needed?
+            me->setActive(false);
         }
 
         void JustSummoned(Creature *summon)
@@ -290,9 +290,9 @@ public:
             Summons.Despawn(summon);
         }
 
-        void KilledUnit(Unit *pVictim)
+        void KilledUnit(Unit* pVictim)
         {
-            if (pVictim == me)
+            if (pVictim == me || (pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetEntry() == NPC_POWER_SPARK))
                 return;
 
             switch (uiPhase)
@@ -390,7 +390,7 @@ public:
                     x = Locations[1].GetPositionX() + float(urand(10, 28)) * cos(angle);
                     y = Locations[1].GetPositionY() + float(urand(10, 28)) * sin(angle);
 
-                    if (Creature* pOverload = me->SummonCreature(NPC_ARCANE_OVERLOAD, x, y, FLOOR_Z, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 45*IN_MILLISECONDS))
+                    if (Creature* pOverload = me->SummonCreature(NPC_ARCANE_OVERLOAD, x, y, FLOOR_Z - 1.8f, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 45*IN_MILLISECONDS))
                     {
                         if (!urand(0, 2))
                             DoScriptText(SAY_ANTI_MAGIC_SHELL, me);
@@ -475,14 +475,32 @@ public:
                 }
                 case ACTION_CAST_SURGE:
                 {
-                    if (Unit* pTarget = SelectVehicleBaseOrPlayer())
-                    {
-                        if (!urand(0, 2))
-                            DoScriptText(SAY_SURGE_OF_POWER, me);
+                    if (!urand(0, 2))
+                        DoScriptText(SAY_SURGE_OF_POWER, me);
 
-                        if (Player* pPlayer = pTarget->GetCharmerOrOwnerPlayerOrPlayerItself())
-                            me->MonsterWhisper(WHISPER_SURGE, pPlayer->GetGUID(), true);
-                        DoCast(pTarget, RAID_MODE(SPELL_SURGE_OF_POWER_10, SPELL_SURGE_OF_POWER_25));
+                    if (getDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
+                    {
+                        if (Unit* target = SelectVehicleBaseOrPlayer())
+                        {
+                            if (Player* player = target->GetCharmerOrOwnerPlayerOrPlayerItself())
+                                me->MonsterWhisper(WHISPER_SURGE, player->GetGUID(), true);
+                            DoCast(target, SPELL_SURGE_OF_POWER_10);
+                        }
+                    }
+                    else
+                    {
+                        // immune whole threatlist
+                        std::list<HostileReference *>& ThreatList = me->getThreatManager().getThreatList();
+                        for (std::list<HostileReference *>::const_iterator itr = ThreatList.begin(); itr != ThreatList.end(); ++itr)
+                        {
+                            if (Unit* hostil = Unit::GetUnit(*me, (*itr)->getUnitGuid()))
+                                hostil->ApplySpellImmune(0, IMMUNITY_ID, SPELL_SURGE_OF_POWER_25, true);
+                        }
+
+                        // select 3 targets, remove immunity on spellhit
+                        DoCast(me, SPELL_SURGE_OF_POWER_25_MARKER, true);
+                        // spellscript will select not immuned units
+                        DoCast(SPELL_SURGE_OF_POWER_25);
                     }
                     break;
                 }
@@ -626,6 +644,12 @@ public:
                 target->CastSpell(target, SPELL_ARCANE_BOMB_KNOCKBACK, true);
                 target->CastSpell(target, SPELL_ARCANE_OVERLOAD, true);
                 target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            }
+            if (spell->Id == SPELL_SURGE_OF_POWER_25_MARKER)
+            {
+                target->ApplySpellImmune(0, IMMUNITY_ID, SPELL_SURGE_OF_POWER_25, false);
+                if (Player* player = target->GetCharmerOrOwnerPlayerOrPlayerItself())
+                    me->MonsterWhisper(WHISPER_SURGE, player->GetGUID(), true);
             }
         }
 
@@ -1136,7 +1160,7 @@ public:
 
         void UpdateAI(const uint32 uiDiff)
         {
-            if (canMove && me->CanFreeMove())
+            if (canMove && me->CanFreeMove() && !me->HasAura(SPELL_POWER_SPARK_PLAYERS))
             {
                 if (uiTimer <= uiDiff)
                 {
@@ -1324,6 +1348,48 @@ public:
     }
 };
 
+class IsBadTargetForSpell
+{
+    public:
+        IsBadTargetForSpell() { }
+
+        bool operator() (Unit* unit)
+        {
+            SpellEntry* sSurge;
+            sSurge = GET_SPELL(SPELL_SURGE_OF_POWER_25);
+            if (sSurge)
+                return unit->IsImmunedToSpell(sSurge);
+
+            return true;
+        }
+};
+
+class spell_surge_of_power_targeting : public SpellScriptLoader
+{
+    public:
+        spell_surge_of_power_targeting() : SpellScriptLoader("spell_surge_of_power_targeting") { }
+
+        class spell_surge_of_power_targeting_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_surge_of_power_targeting_SpellScript)
+
+            void FilterTargets(std::list<Unit*>& unitList)
+            {
+                unitList.remove_if(IsBadTargetForSpell());
+            }
+
+            void Register()
+            {
+                OnUnitTargetSelect += SpellUnitTargetFn(spell_surge_of_power_targeting_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_AREA_ENEMY_SRC);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_surge_of_power_targeting_SpellScript();
+        }
+};
+
 void AddSC_boss_malygos()
 {
     new boss_malygos();
@@ -1334,4 +1400,5 @@ void AddSC_boss_malygos()
     new npc_vortex_vehicle();
     new npc_hover_disc();
     new go_focusing_iris();
+    new spell_surge_of_power_targeting();
 }
