@@ -3973,6 +3973,10 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->AttributesEx5 &= ~SPELL_ATTR5_USABLE_WHILE_STUNNED;
             count++;
             break;
+        case 56278: // Read Pronouncement, missing EffectApplyAuraName
+            spellInfo->Effect[0] = SPELL_EFFECT_DUMMY;
+            count++;
+            break;
         case 53241: // Marked for Death (Rank 1)
         case 53243: // Marked for Death (Rank 2)
         case 53244: // Marked for Death (Rank 3)
