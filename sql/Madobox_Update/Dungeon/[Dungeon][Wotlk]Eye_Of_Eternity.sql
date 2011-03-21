@@ -1,6 +1,3 @@
--- Update Position Npcs.
-UPDATE `creature` SET `position_x` = `position_x` + 400  WHERE `map` = 616;
-UPDATE `gameobject` SET `position_x` = `position_x` + 400 WHERE `map` = 616;
 -- Spawns
 DELETE FROM `creature` WHERE `id` IN (30090, 22517);
 -- Spawn Focusing Iris (Normal/Heroic)
@@ -9,14 +6,17 @@ INSERT INTO `gameobject` (`id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `
 VALUES 
 (193958, 616, 1, 1, 1154.35, 1300.87, 266.172, 5.34356, 0, 0, 0, 1, 180, 0, 1),
 (193960, 616, 2, 1, 1154.35, 1300.87, 266.172, 5.34356, 0, 0, 0, 1, 180, 0, 1);
+-- Update Position Npcs.
+UPDATE `creature` SET `position_x` = `position_x` + 400  WHERE `map` = 616;
+UPDATE `gameobject` SET `position_x` = `position_x` + 400 WHERE `map` = 616;
 -- Update Stat Spell Wyrmrest skytalon
-UPDATE `creature_template`
-SET `spell1` = 56091, -- Flammenstachel
-`spell2` = 56092, -- Flammenhuelle
-`spell3` = 57090, -- Wiederbeleben
-`spell4` = 57143, -- Explosion des Lebens
-`spell5` = 57108, -- Flammenschild
-`spell6` = 57092  -- Blitztempo
+UPDATE `creature_template` SET 
+`spell1` = 56091,-- Flammenstachel
+`spell2` = 56092,-- Flammenhuelle
+`spell3` = 57090,-- Wiederbeleben
+`spell4` = 57143,-- Explosion des Lebens
+`spell5` = 57108,-- Flammenschild
+`spell6` = 57092 -- Blitztempo
 WHERE `entry` IN (30161, 31752);
 -- Update Malygos (BOSS)
 UPDATE `creature` SET `spawndist` = 0,`MovementType` = 0 WHERE `id` = 28859;
@@ -51,14 +51,13 @@ UPDATE `instance_template` SET `script` = 'instance_eye_of_eternity', `allowMoun
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 13 AND `SourceEntry` IN (56505, 56152, 59099);
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceEntry`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`) 
 VALUES 
-(13, 56152, 18, 1, 28859), -- power spark (malygos)
-(13, 56505, 18, 1, 30334), -- surge of power (deep breath)
-(13, 59099, 18, 1, 0); -- destroy platform event
+(13, 56152, 18, 1, 28859),-- Power spark (malygos)
+(13, 56505, 18, 1, 30334),-- Surge of power (deep breath)
+(13, 59099, 18, 1, 0);-- Destroy platform event
 -- Vehicle onclick
 DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (30234);
 INSERT INTO `npc_spellclick_spells` (`npc_entry`,`spell_id`,`quest_start`,`quest_start_active`,`quest_end`,`cast_flags`,`aura_required`,`aura_forbidden`,`user_type`) VALUES
-(30234,46598,0,0,0,1,0,0,0); -- malygos player disc
-
+(30234,46598,0,0,0,1,0,0,0);-- Malygos player disc
 DELETE FROM `spell_script_names` WHERE `spell_id`=60936;
 INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES
 (60936, 'spell_surge_of_power_targeting');
