@@ -1166,43 +1166,24 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                     return;                                 // implemented in EffectScript[0]
                 case 62324: // Throw Passenger
                 {
-                    if (m_targets.HasTraj())
-                    {
-                        if (Vehicle *vehicle = m_caster->GetVehicleKit())
-                            if (Unit *passenger = vehicle->GetPassenger(damage - 1))
-                            {
-                                std::list<Unit*> unitList;
-                                // use 99 because it is 3d search
-                                SearchAreaTarget(unitList, 99, PUSH_DST_CENTER, SPELL_TARGETS_ENTRY, 33114);
-                                float minDist = 99 * 99;
-                                Unit *target = NULL;
-                                for (std::list<Unit*>::iterator itr = unitList.begin(); itr != unitList.end(); ++itr)
-                                {
-                                    if (Vehicle *seat = (*itr)->GetVehicleKit())
-                                        if (!seat->GetPassenger(0))
-                                            if (Unit *device = seat->GetPassenger(2))
-                                                if (!device->GetCurrentSpell(CURRENT_CHANNELED_SPELL))
-                                                {
-                                                    float dist = (*itr)->GetExactDistSq(&m_targets.m_dstPos);
-                                                    if (dist < minDist)
-                                                    {
-                                                        minDist = dist;
-                                                        target = (*itr);
-                                                    }
-                                                }
-                                }
-                                if (target && target->IsWithinDist2d(&m_targets.m_dstPos, GetSpellRadius(m_spellInfo, effIndex, false) * 2)) // now we use *2 because the location of the seat is not correct
-                                    passenger->EnterVehicle(target, 0);
-                                else
-                                {
-                                    passenger->ExitVehicle();
-                                    float x, y, z;
-                                    m_targets.m_dstPos.GetPosition(x, y, z);
-                                    passenger->GetMotionMaster()->MoveJump(x, y, z, m_targets.GetSpeedXY(), m_targets.GetSpeedZ());
-                                }
-                            }
-                    }
-                    return;
+                    if (Vehicle *demolisher = m_caster->GetVehicleKit())
+                        if (Unit *passenger = demolisher->GetPassenger(3))
+                            if (Creature *leviathan = m_caster->FindNearestCreature(33113, 200))
+                                if (!leviathan->HasAura(62475))
+                                    if (Vehicle *vehicle = leviathan->GetVehicleKit())
+                                        for (uint8 i = 0; i < 4; ++i)
+                                        {
+                                            if (vehicle->GetPassenger(i))
+                                                if (Vehicle *seat = vehicle->GetPassenger(i)->GetVehicleKit())
+                                                    if (!seat->GetPassenger(0) && seat->GetPassenger(2))
+                                                        if (!seat->GetPassenger(2)->HasUnitState(UNIT_STAT_CASTING))
+                                                        {
+                                                            passenger->EnterVehicle(vehicle->GetPassenger(i), 0);
+                                                            m_caster->RemoveAurasDueToSpell(62427);
+                                                            return;
+                                                        }
+                                        }
+                                        return;
                 }
                 case 64385:                                 // Unusual Compass
                 {
@@ -4445,6 +4426,42 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
     {
         case SPELLFAMILY_GENERIC:
         {
+            if (unitTarget && unitTarget->HasAura(63050))
+            {
+                // reduces Sanity by %
+                uint32 sanityCount = 0;
+                switch(m_spellInfo->Id)
+                {
+                    case 63803: // Brain Link
+                    case 64168: // Lunatic Gaze
+                        sanityCount = 2; 
+                        break;
+                    case 63830: // Malady of the Mind 10
+                    case 63881: // Malady of the Mind 25
+                        sanityCount = 3; 
+                        break;
+                    case 64164: // Lunatic Gaze P3
+                        sanityCount = 4; 
+                        break;
+                    case 63795: // Psychosis
+                        sanityCount = 9; 
+                        break;
+                    case 64059: // Induce Madness
+                        sanityCount = 100; 
+                        break;
+                }
+                if (sanityCount)
+                {
+                    if (Aura *aur = unitTarget->GetAura(63050))
+                    {
+                        int32 stack = aur->GetStackAmount() - sanityCount;
+                        if (stack <= 0)
+                            unitTarget->RemoveAurasDueToSpell(63050);
+                        else
+                            unitTarget->SetAuraStack(63050, unitTarget, stack);
+                    }
+                }
+            }
             switch(m_spellInfo->Id)
             {
                 // Glyph of Backstab
@@ -5191,7 +5208,10 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
                     if (Vehicle *seat = m_caster->GetVehicleKit())
                         if (Unit *passenger = seat->GetPassenger(0))
                             if (Unit *demolisher = m_caster->GetVehicleBase())
-                                passenger->CastSpell(demolisher, damage, true);
+                            {
+                                passenger->EnterVehicle(demolisher, 3);
+                                demolisher->AddAura(62427, demolisher);
+                            }
                     return;
                 }
                 case 62482: // Grab Crate

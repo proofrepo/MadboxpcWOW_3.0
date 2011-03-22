@@ -756,6 +756,7 @@ bool SpellMgr::_isPositiveEffect(uint32 spellId, uint32 effIndex, bool deep) con
                 case 34700: // Allergic Reaction
                 case 61987: // Avenging Wrath Marker
                 case 61988: // Divine Shield exclude aura
+                case 63322: // Saronite Vapors
                     return false;
                 case 30877: // Tag Murloc
                     return true;
@@ -3864,9 +3865,24 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->EffectBasePoints[2] += 30000;
             count++;
             break;
-        // some dummy spell only has dest, should push caster in this case
         case 62324: // Throw Passenger
-            spellInfo->Targets |= TARGET_FLAG_UNIT_CASTER;
+            spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CASTER;
+            count++;
+            break;
+        case 62907: // Freya's Ward
+        case 62947:
+            spellInfo->DurationIndex = 0;
+            count++;
+            break;
+        case 62713: // Ironbranch's Essence
+        case 62968: // Brightleaf's Essence
+            spellInfo->DurationIndex = 39;
+            count++;
+            break;
+        case 62661: // Searing Flames
+        case 61915: // Lightning Whirl 10
+        case 63483: // Lightning Whirl 25
+            spellInfo->InterruptFlags = 47;
             count++;
             break;
         case 16834: // Natural shapeshifter
@@ -3980,6 +3996,33 @@ void SpellMgr::LoadSpellCustomAttr()
         //
         case 63342: // Focused Eyebeam Summon Trigger
             spellInfo->MaxAffectedTargets = 1;
+            count++;
+            break;
+        case 64145: // Diminish Power
+        case 63882: // Death Ray Warning Visual
+        case 63886: // Death Ray Damage Visual
+            spellInfo->AttributesEx3 |= SPELL_ATTR3_STACK_FOR_DIFF_CASTERS;
+            count++;
+            break;
+        case 64172: // Titanic Storm
+            spellInfo->excludeTargetAuraSpell = 65294; // Empowered
+            count++;
+            break;
+        case 63830: // Malady of the Mind
+        case 63881: // Malady of the Mind proc
+        case 63795: // Psychosis
+            spellInfo->EffectImplicitTargetB[0] = TARGET_UNIT_TARGET_ANY;
+            spellInfo->EffectImplicitTargetB[1] = TARGET_UNIT_TARGET_ANY;
+            spellInfo->EffectImplicitTargetB[2] = TARGET_UNIT_TARGET_ANY;
+            count++;
+            break;
+        case 63802: // Brain Link
+            spellInfo->MaxAffectedTargets = 2;
+            spellInfo->EffectRadiusIndex[0] = 12; // 100 yard
+            count++;
+            break;
+        case 63050: // Sanity
+            spellInfo->AttributesEx3 |= SPELL_ATTR3_DEATH_PERSISTENT;
             count++;
             break;
         // ENDOF ULDUAR SPELLS
