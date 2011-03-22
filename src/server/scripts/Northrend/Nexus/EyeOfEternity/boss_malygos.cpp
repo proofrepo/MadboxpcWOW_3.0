@@ -1174,7 +1174,7 @@ public:
     };
 };
 
-<<<<<<< HEAD
+
 class npc_vortex_vehicle : public CreatureScript
 {
 public:
@@ -1391,8 +1391,7 @@ class spell_surge_of_power_targeting : public SpellScriptLoader
         }
 };
 
-=======
->>>>>>> 99a44a653089cd94bef899288a0121e934b3785b
+
 void AddSC_boss_malygos()
 {
     new boss_malygos();
