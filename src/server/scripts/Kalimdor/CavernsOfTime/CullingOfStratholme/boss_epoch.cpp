@@ -179,7 +179,6 @@ public:
 
 };
 
-
 void AddSC_boss_epoch()
 {
     new boss_epoch();

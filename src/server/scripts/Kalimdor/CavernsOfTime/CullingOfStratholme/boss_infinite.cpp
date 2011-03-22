@@ -31,11 +31,14 @@ enum Yells
     SAY_DEATH                                   = -1595047
 };
 
+<<<<<<< HEAD
 enum Achievements
 {
     ACHIEV_CULLING_OF_TIME                      = 1817
 };
 
+=======
+>>>>>>> 99a44a653089cd94bef899288a0121e934b3785b
 class boss_infinite_corruptor : public CreatureScript
 {
 public:
@@ -137,7 +140,6 @@ public:
     };
 
 };
-
 
 void AddSC_boss_infinite_corruptor()
 {

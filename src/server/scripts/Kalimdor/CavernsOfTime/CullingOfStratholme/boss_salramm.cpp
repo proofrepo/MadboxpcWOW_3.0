@@ -196,7 +196,6 @@ public:
 
 };
 
-
 void AddSC_boss_salramm()
 {
     new boss_salramm();
