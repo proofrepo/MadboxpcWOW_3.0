@@ -6,9 +6,12 @@ INSERT INTO `gameobject` (`id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `
 VALUES 
 (193958, 616, 1, 1, 1154.35, 1300.87, 266.172, 5.34356, 0, 0, 0, 1, 180, 0, 1),
 (193960, 616, 2, 1, 1154.35, 1300.87, 266.172, 5.34356, 0, 0, 0, 1, 180, 0, 1);
+
 -- Update Position Npcs.
 UPDATE `creature` SET `position_x` = `position_x` + 400  WHERE `map` = 616;
 UPDATE `gameobject` SET `position_x` = `position_x` + 400 WHERE `map` = 616;
+UPDATE `areatrigger_teleport` SET `target_position_x` = `target_position_x` + 400 WHERE `id` = 5290;
+
 -- Update Stat Spell Wyrmrest skytalon
 UPDATE `creature_template` SET 
 `spell1` = 56091,-- Flammenstachel
@@ -62,6 +65,6 @@ DELETE FROM `spell_script_names` WHERE `spell_id`=60936;
 INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES
 (60936, 'spell_surge_of_power_targeting');
 
--- Portal Entrance
-UPDATE `areatrigger_teleport` SET `target_position_x` = 2735.745850, `target_position_y` = 1321.490356, `target_position_z` = 266.171051, `target_orientation` = 5.414711 WHERE `id` = 5290;
+-- Portal Entrance wrong fix. (testing)
+-- UPDATE `areatrigger_teleport` SET `target_position_x` = 2735.745850, `target_position_y` = 1321.490356, `target_position_z` = 266.171051, `target_orientation` = 5.414711 WHERE `id` = 5290;
 
