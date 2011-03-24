@@ -3487,6 +3487,11 @@ void SpellMgr::LoadSpellCustomAttr()
         {
             switch (spellInfo->Effect[j])
             {
+                case SPELL_EFFECT_KNOCK_BACK:
+                case SPELL_EFFECT_KNOCK_BACK_DEST:
+                    EffectMechanic[j] = MECHANIC_KNOCKOUT;
+                    count++;
+                    break;
                 case SPELL_EFFECT_SCHOOL_DAMAGE:
                 case SPELL_EFFECT_WEAPON_DAMAGE:
                 case SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL:
