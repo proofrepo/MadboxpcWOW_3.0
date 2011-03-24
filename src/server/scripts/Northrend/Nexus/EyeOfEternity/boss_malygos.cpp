@@ -124,9 +124,10 @@ enum eAction
     ACTION_OVERLOAD     = 3,
     ACTION_DEEP_BREATH  = 4,
     ACTION_SPAWN_ADDS   = 5,
-    ACTION_MOUNT_ALL    = 6,
-    ACTION_CAST_SURGE   = 7,
-    ACTION_CLEAR_PLR    = 8
+    ACTION_SPAWN_MOUNTS = 6,
+    ACTION_MOUNT_ALL    = 7,
+    ACTION_CAST_SURGE   = 8,
+    ACTION_CLEAR_PLR    = 9
 };
 
 enum eMovePoints
@@ -168,7 +169,7 @@ static Position LordLocations[]=
 };
 
 #define FLOOR_Z           268.17f
-#define WHISPER_SURGE     "Malygos fixes his eyes on you."
+#define WHISPER_SURGE     "Malygos fixes his eyes on you!"
 
 class boss_malygos : public CreatureScript
 {
@@ -191,6 +192,7 @@ public:
         SummonList Summons;
 
         std::set<uint64> SparkList;
+        std::list<std::pair<uint64,uint64> > uiMounts;
 
         bool vortexing;
 
@@ -238,6 +240,7 @@ public:
 
             Summons.DespawnAll();
             SparkList.clear();
+            uiMounts.clear();
 
             if (m_pInstance)
             {
@@ -283,7 +286,10 @@ public:
                 case NPC_NEXUS_LORD:
                 case NPC_SCION_OF_ETERNITY:
                     if (Creature* pDisc = me->SummonCreature(NPC_DISC_PLAYER, summon->GetPositionX(), summon->GetPositionY(), FLOOR_Z, 0.0f))
+                    {
+                        pDisc->ApplySpellImmune(0, IMMUNITY_ID, SPELL_ARCANE_BOMB_KNOCKBACK, true);
                         pDisc->SetSpeed(MOVE_FLIGHT, 3.0f);
+                    }
                     uiAddsCount++;
                     break;
             }
@@ -450,7 +456,7 @@ public:
                     }
                     break;
                 }
-                case ACTION_MOUNT_ALL:
+                case ACTION_SPAWN_MOUNTS:
                 {
                     Map *map = me->GetMap();
                     if (!map->IsDungeon())
@@ -462,14 +468,37 @@ public:
                         Player* i_pl = i->getSource();
                         if (i_pl && !i_pl->isGameMaster() && i_pl->isAlive())
                         {
-                            if (Creature* pMount = i_pl->SummonCreature(NPC_WYRMREST_SKYTALON, i_pl->GetPositionX(), i_pl->GetPositionY(), 220.0f, i_pl->GetOrientation()))
+                            if (Creature* mount = i_pl->SummonCreature(NPC_WYRMREST_SKYTALON, i_pl->GetPositionX(), i_pl->GetPositionY(), 220.0f, i_pl->GetOrientation()))
                             {
-                                pMount->SetFlying(true);
-                                pMount->SetSpeed(MOVE_FLIGHT, 2.0f); //TODO: find value
-                                i_pl->EnterVehicle(pMount, 0);
+                                mount->SetFlying(true);
+                                mount->SetSpeed(MOVE_FLIGHT, 2.0f);
+                                uiMounts.push_back(std::pair<uint64, uint64>(mount->GetGUID(), i_pl->GetGUID()));
                             }
                         }
                     }
+                    me->SetInCombatWithZone();
+                    break;
+                }
+                case ACTION_MOUNT_ALL:
+                {
+                    if (uiMounts.empty())
+                        return;
+
+                    for (std::list<std::pair<uint64,uint64> >::iterator iter = uiMounts.begin(); iter != uiMounts.end(); ++iter)
+                    {
+                        Creature* mount = Unit::GetCreature(*me, (*iter).first);
+                        Player* player = Unit::GetPlayer(*me, (*iter).second);
+                        
+                        if (!mount || !player)
+                            continue;
+
+                        if (!player->isAlive())
+                            continue;
+
+                        //mount->SetCreatorGUID(player->GetGUID());
+                        player->EnterVehicle(mount, 0);
+                    }
+
                     me->SetInCombatWithZone();
                     break;
                 }
@@ -519,8 +548,9 @@ public:
                         {
                             if (!i_pl->GetVehicle())
                             {
-                                i_pl->SetFlying(true);
-                                me->Kill(i_pl, false);
+                                i_pl->SetUnitMovementFlags(0);
+                                me->DealDamage(i_pl, i_pl->GetHealth());
+                                i_pl->SetMovement(MOVE_ROOT);
                             }
                         }
                     }
@@ -872,6 +902,7 @@ public:
                                         platform->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
                                 }
                                 me->GetMotionMaster()->MovePoint(POINT_PHASE_3, Locations[4]);
+                                DoAction(ACTION_SPAWN_MOUNTS);
                                 uiWaitTimer = 3*IN_MILLISECONDS;
                                 uiStep++;
                                 break;
@@ -1174,7 +1205,6 @@ public:
     };
 };
 
-
 class npc_vortex_vehicle : public CreatureScript
 {
 public:
@@ -1390,8 +1420,6 @@ class spell_surge_of_power_targeting : public SpellScriptLoader
             return new spell_surge_of_power_targeting_SpellScript();
         }
 };
-
-
 void AddSC_boss_malygos()
 {
     new boss_malygos();
