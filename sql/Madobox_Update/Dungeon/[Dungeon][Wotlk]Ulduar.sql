@@ -1,4 +1,4 @@
----- Runeforged Sentry
+-- Runeforged Sentry
 UPDATE `creature_template` SET `spell1` = 64852, `spell2` = 64870, `spell3` = 64847, `AIName` = 'SmartAI' WHERE `entry` = 34234;
 UPDATE `creature_template` SET `spell1` = 64852, `spell2` = 64870, `spell3` = 64847 WHERE `entry` = 34235;
 DELETE FROM `creature_ai_scripts` WHERE (`creature_id`=34234);
@@ -405,7 +405,7 @@ INSERT INTO `smart_scripts` VALUES
 (33768, 0, 0, 0, 0, 0, 100, 2, 4000, 8000, 10000, 12000, 11, 38064, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,'Rubble -- Cast Stone Nova 10'),
 (33768, 0, 1, 0, 0, 0, 100, 4, 4000, 8000, 10000, 12000, 11, 63978, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,'Rubble -- Cast Stone Nova 25');
 
----- Ignis
+-- Ignis
 UPDATE `creature_template` SET `mechanic_immune_mask` = 650854235, `flags_extra` = 9, `vehicleId` = 342 WHERE `entry` = 33118;
 UPDATE `creature_template` SET `mechanic_immune_mask` = 650854235, `flags_extra` = 9 WHERE `entry` = 33190;
 DELETE FROM creature WHERE id = 33121;
@@ -449,8 +449,6 @@ INSERT INTO `conditions` VALUES
 ('13','0','63702','0','18','1','32930','0','0','',"Focused Eyebeam (Kologarn)");
 -- Cleanup
 DELETE FROM `creature` WHERE `id` IN (33632, 33802, 34297, 32933, 32934, 33809, 33661, 33742);
-DELETE FROM vehicle_accessory WHERE entry = 32930;
-
 
 -- Auriaya
 UPDATE `creature_template` SET `baseattacktime` = 1500, `equipment_id` = 2422, `mechanic_immune_mask` = 617299807, `flags_extra` = 1 WHERE `entry` = 33515;
@@ -543,8 +541,9 @@ UPDATE `creature_template` SET `mechanic_immune_mask` = 650854235, `ScriptName` 
 UPDATE `creature_template` SET `vehicleid` = 370, `mechanic_immune_mask` = 650854235, `ScriptName` = 'boss_leviathan_mk' WHERE `entry` = 33432;
 UPDATE `creature_template` SET `minlevel` = 83, `maxlevel` = 83, `mechanic_immune_mask` = 650854235, `flags_extra` = 1 WHERE `entry` = 34106;
 UPDATE `creature_template` SET `mechanic_immune_mask` = 650854235, `ScriptName` = 'boss_leviathan_mk_turret' WHERE `entry` = 34071;
-DELETE FROM vehicle_accessory WHERE entry = 33432;
-INSERT INTO vehicle_accessory VALUE (33432, 34071, 3, 1, 'Leviathan Mk II turret');
+DELETE FROM vehicle_accessory WHERE accessory_entry = 34071;
+INSERT INTO vehicle_accessory (guid,accessory_entry,seat_id,minion,description)VALUE 
+(33432, 34071, 3, 1, 'Leviathan Mk II turret');
 UPDATE creature_template SET ScriptName = 'npc_proximity_mine' WHERE entry = 34362;
 DELETE FROM `creature_model_info` WHERE `modelid`=28831;
 INSERT INTO `creature_model_info` (`modelid`, `bounding_radius`, `combat_reach`, `gender`, `modelid_other_gender`) VALUES
@@ -1130,8 +1129,8 @@ INSERT INTO `reference_loot_template` (`entry`, `item`, `ChanceOrQuestChance`, `
 DELETE FROM creature WHERE id = 33167;
 UPDATE `creature_template` SET `modelid1` = 11686, `modelid2` = 0 WHERE `entry` IN (33364, 33369, 33108, 33366);
 
-DELETE FROM vehicle_accessory WHERE entry = 33113 AND seat_id IN (0, 1);
-INSERT INTO vehicle_accessory VALUES 
+DELETE FROM vehicle_accessory WHERE `accessory_entry` = 33114 AND seat_id IN (0, 1);
+INSERT INTO vehicle_accessory (`guid`,`accessory_entry`,`seat_id`,`minion`,`description`) VALUES 
 (33113, 33114, 0, 1, "Flame Leviathan"),
 (33113, 33114, 1, 1, "Flame Leviathan");
 
@@ -1245,10 +1244,6 @@ UPDATE `creature_template` SET `faction_A` = 16, `faction_H` = 16 WHERE `entry` 
 
 -- XT-002 correct vehicle id
 UPDATE `creature_template` SET `VehicleId` = 353 WHERE `entry` = 33293;
--- XT-002 Hearth
-DELETE FROM `vehicle_accessory` WHERE `entry` = 33293;
-INSERT INTO `vehicle_accessory` VALUES 
-(33293, 33329, 0, 1, "XT-002 Hearth");
 -- Gravity Bomb
 DELETE FROM spell_script_names WHERE spell_id IN (63025, 64233);
 INSERT INTO spell_script_names VALUES 
@@ -1272,8 +1267,8 @@ INSERT INTO `npc_spellclick_spells` (`npc_entry`,`spell_id`,`quest_start`,`quest
 -- XT-002 correct vehicle id
 UPDATE `creature_template` SET `VehicleId` = 353 WHERE `entry` = 33293;
 -- XT-002 Hearth
-DELETE FROM `vehicle_accessory` WHERE `entry` = 33293;
-INSERT INTO `vehicle_accessory` VALUES 
+DELETE FROM `vehicle_accessory` WHERE `accessory_entry` = 33329;
+INSERT INTO `vehicle_accessory` (`guid`,`accessory_entry`,`seat_id`,`minion`,`description`) VALUES 
 (33293, 33329, 0, 1, "XT-002 Hearth");
 -- Gravity Bomb
 DELETE FROM spell_script_names WHERE spell_id IN (63025, 64233);
@@ -1281,7 +1276,7 @@ INSERT INTO spell_script_names VALUES
 (63025, "spell_xt002_gravity_bomb"),
 (64233, "spell_xt002_gravity_bomb");
 
-DELETE FROM vehicle_template_accessory WHERE entry = 32930;
+DELETE FROM vehicle_template_accessory WHERE `accessory_entry` IN (32933,32934);
 INSERT INTO vehicle_template_accessory VALUES 
 (32930, 32933, 0, 1, "Kologarn - Left Arm", 6, 30000),
 (32930, 32934, 1, 1, "Kologarn - Right Arm", 6, 30000);
@@ -1554,5 +1549,9 @@ INSERT INTO `spelldifficulty_dbc` (`id`, `spellid0`, `spellid1`, `spellid2`, `sp
 ('3261','63677','64533','0','0'),
 ('3262','64348','64536','0','0'),
 ('3263','63689','64535','0','0');
+
+-- Fire Bomb Trigger
+UPDATE `creature_template` SET `flags_extra` = `flags_extra` | 128, `spell1` = 66318 WHERE `entry` = 34854;
+
 
 
