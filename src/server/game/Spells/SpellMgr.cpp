@@ -3489,7 +3489,7 @@ void SpellMgr::LoadSpellCustomAttr()
             {
                 case SPELL_EFFECT_KNOCK_BACK:
                 case SPELL_EFFECT_KNOCK_BACK_DEST:
-                    EffectMechanic[j] = MECHANIC_KNOCKOUT;
+                    spellInfo->EffectMechanic[j] = MECHANIC_KNOCKOUT;
                     count++;
                     break;
                 case SPELL_EFFECT_SCHOOL_DAMAGE:
