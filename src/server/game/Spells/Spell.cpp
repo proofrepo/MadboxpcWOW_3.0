@@ -52,7 +52,6 @@
 #include "DisableMgr.h"
 #include "SpellScript.h"
 #include "InstanceScript.h"
-#include "InstanceSaveMgr.h" 
 
 #define SPELL_CHANNEL_UPDATE_INTERVAL (1 * IN_MILLISECONDS)
 
@@ -5496,13 +5495,19 @@ SpellCastResult Spell::CheckCast(bool strict)
                     uint32 mapId = m_caster->GetMap()->GetId();
                     Difficulty difficulty = m_caster->GetMap()->GetDifficulty();
                     if (map->IsRaid())
-                        if (InstanceSave* targetsave = target->ToPlayer()->GetInstanceSave(mapId, true))
-                        {
-                            InstanceSave* m_castersave = m_caster->ToPlayer()->GetInstanceSave(mapId, true);
-                            if (targetsave->GetInstanceId() != m_castersave->GetInstanceId())
-                                return SPELL_FAILED_TARGET_LOCKED_TO_RAID_INSTANCE;
-                        }
-                        
+                        if (InstancePlayerBind* targetBind = target->GetBoundInstance(mapId, difficulty))
+                            if (InstancePlayerBind* casterBind = m_caster->ToPlayer()->GetBoundInstance(mapId, difficulty))
+                                if (targetBind->save)
+                                    if (casterBind->save)
+                                    {
+                                        if (targetBind->perm && targetBind->save->GetInstanceId() != casterBind->save->GetInstanceId())
+                                            return SPELL_FAILED_TARGET_LOCKED_TO_RAID_INSTANCE;
+                                    }
+                                    else
+                                    {
+                                        return SPELL_FAILED_TARGET_LOCKED_TO_RAID_INSTANCE;
+                                    }
+
                     InstanceTemplate const* instance = ObjectMgr::GetInstanceTemplate(mapId);
                     if (!instance)
                         return SPELL_FAILED_TARGET_NOT_IN_INSTANCE;
