@@ -3753,12 +3753,15 @@ void SpellMgr::LoadSpellCustomAttr()
         case 54172: // Divine Storm (heal)
         case 29213: // Curse of the Plaguebringer - Noth
         case 28542: // Life Drain - Sapphiron
-        case 66588: // Flaming Spear
         case 54171: // Divine Storm
         case 60939: // Surge of Power
         case 61693: // Arcane Storm
             spellInfo->MaxAffectedTargets = 3;
             count++;
+            break;
+        case 66588: // Flaming Spear
+            spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ENEMY;
+            spellInfo->EffectImplicitTargetA[1] = TARGET_UNIT_TARGET_ENEMY;
             break;
         case 38310: // Multi-Shot
         case 53385: // Divine Storm (Damage)
