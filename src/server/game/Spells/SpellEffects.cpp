@@ -2348,6 +2348,19 @@ void Spell::SpellDamageHeal(SpellEffIndex /*effIndex*/)
         // Death Pact - return pct of max health to caster
         else if (m_spellInfo->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && m_spellInfo->SpellFamilyFlags[0] & 0x00080000)
             addhealth = caster->SpellHealingBonus(unitTarget, m_spellInfo, int32(caster->CountPctFromMaxHealth(damage)), HEAL);
+        // Life Burst
+        else if (m_spellInfo->Id == 57143)
+        {
+            Unit* charmer = caster->GetCharmer();
+            if (charmer && charmer->ToPlayer())
+            {
+                uint8 cp = charmer->ToPlayer()->GetComboPoints();
+                addhealth = 2500 * (cp + 1);
+
+                if (caster->HasAura(57143))
+                    addhealth = int32(addhealth * 1.5);
+            }
+        }
         else
             addhealth = caster->SpellHealingBonus(unitTarget, m_spellInfo, addhealth, HEAL);
 
@@ -7011,7 +7024,7 @@ void Spell::SummonGuardian(uint32 i, uint32 entry, SummonPropertiesEntry const *
         if (ItemPrototype const *proto = m_CastItem->GetProto())
             if (proto->RequiredSkill == SKILL_ENGINERING)
                 if (uint16 skill202 = caster->ToPlayer()->GetSkillValue(SKILL_ENGINERING))
-                    level = std::max(skill202/5, caster->getLevel());
+                    level = std::max(uint8(skill202/5), caster->getLevel());
 
     //float radius = GetSpellRadiusForFriend(sSpellRadiusStore.LookupEntry(m_spellInfo->EffectRadiusIndex[i]));
     float radius = 5.0f;
