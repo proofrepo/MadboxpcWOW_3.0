@@ -7,3 +7,8 @@ INSERT INTO npc_spellclick_spells (`npc_entry`, `spell_id`, `quest_start`, `ques
 (35419, 68503, 0, 0, 0, 1, 0, 0, 0), 
 (35431, 46598, 0, 0, 0, 1, 0, 0, 0), 
 (35433, 46598, 0, 0, 0, 1, 0, 0, 0);  
+-- Isle of Conquest bosses aggro through wall fix
+UPDATE `creature_template` SET `unit_flags` = 256 WHERE `entry` = 34924;
+UPDATE `creature_template` SET `unit_flags` = 256 WHERE `entry` = 34922;
+UPDATE `creature_template` SET `unit_flags` = 256 WHERE `entry` = 34918;
+UPDATE `creature_template` SET `unit_flags` = 256 WHERE `entry` = 34919;
