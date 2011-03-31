@@ -64,10 +64,81 @@ public:
 
     struct instance_ulduar_InstanceMapScript : public InstanceScript
     {
+<<<<<<< HEAD
         instance_ulduar_InstanceMapScript(Map* pMap) : InstanceScript(pMap)
+=======
+        instance_ulduar_InstanceMapScript(InstanceMap* map) : InstanceScript(map) { Initialize(); };
+
+        uint32 uiEncounter[MAX_ENCOUNTER];
+        std::string m_strInstData;
+
+        uint64 uiLeviathanGUID;
+        uint64 uiIgnisGUID;
+        uint64 uiRazorscaleGUID;
+        uint64 uiRazorscaleController;
+        uint64 uiRazorHarpoonGUIDs[4];
+        uint64 uiExpCommanderGUID;
+        uint64 uiXT002GUID;
+        uint64 uiAssemblyGUIDs[3];
+        uint64 uiKologarnGUID;
+        uint64 uiLeftArmGUID;
+        uint64 uiRightArmGUID;
+        uint64 uiAuriayaGUID;
+        uint64 uiMimironGUID;
+        uint64 uiHodirGUID;
+        uint64 uiThorimGUID;
+        uint64 uiFreyaGUID;
+        uint64 uiVezaxGUID;
+        uint64 uiYoggSaronGUID;
+        uint64 uiAlgalonGUID;
+        uint64 uiLeviathanGateGUID;
+        uint64 uiVezaxDoorGUID;
+
+        uint64 uiKologarnChestGUID;
+        uint64 uiKologarnBridgeGUID;
+        uint64 uiKologarnDoorGUID;
+        uint64 uiThorimChestGUID;
+        uint64 uiHodirChestGUID;
+        uint64 uiFreyaChestGUID;
+
+        std::set<uint64> mRubbleSpawns;
+
+        void Initialize()
+>>>>>>> 24dae7dd9a782145783f68769dd7f7a9a61fbeee
         {
             SetBossNumber(MAX_BOSS_NUMBER);
             LoadDoorData(doorData);
+<<<<<<< HEAD
+=======
+            uiIgnisGUID             = 0;
+            uiRazorscaleGUID        = 0;
+            uiRazorscaleController  = 0;
+            uiExpCommanderGUID      = 0;
+            uiXT002GUID             = 0;
+            uiKologarnGUID          = 0;
+            uiLeftArmGUID           = 0;
+            uiRightArmGUID          = 0;
+            uiAuriayaGUID           = 0;
+            uiMimironGUID           = 0;
+            uiHodirGUID             = 0;
+            uiThorimGUID            = 0;
+            uiFreyaGUID             = 0;
+            uiVezaxGUID             = 0;
+            uiYoggSaronGUID         = 0;
+            uiAlgalonGUID           = 0;
+            uiKologarnChestGUID     = 0;
+            uiKologarnBridgeGUID    = 0;
+            uiKologarnChestGUID     = 0;
+            uiThorimChestGUID       = 0;
+            uiHodirChestGUID        = 0;
+            uiFreyaChestGUID        = 0;
+            uiLeviathanGateGUID     = 0;
+            uiVezaxDoorGUID         = 0;
+
+            memset(uiEncounter, 0, sizeof(uiEncounter));
+            memset(uiAssemblyGUIDs, 0, sizeof(uiAssemblyGUIDs));
+            memset(uiRazorHarpoonGUIDs, 0, sizeof(uiRazorHarpoonGUIDs));
+>>>>>>> 24dae7dd9a782145783f68769dd7f7a9a61fbeee
         }
 
         uint64 uiLeviathan;
@@ -132,8 +203,19 @@ public:
                 case GO_HODIR_RARE_CHEST_25:
                     HodirRareChestGUID = pGo->GetGUID();
                     break;
+<<<<<<< HEAD
                 case GO_RUNIC_DOOR:
                     RunicDoorGUID = pGo->GetGUID();
+=======
+                case NPC_RAZORSCALE_CONTROLLER:
+                    uiRazorscaleController = creature->GetGUID();
+                    break;
+                case NPC_EXPEDITION_COMMANDER:
+                    uiExpCommanderGUID = creature->GetGUID();
+                    return;
+                case NPC_XT002:
+                    uiXT002GUID = creature->GetGUID();
+>>>>>>> 24dae7dd9a782145783f68769dd7f7a9a61fbeee
                     break;
                 case GO_STONE_DOOR:
                     StoneDoorGUID = pGo->GetGUID();
@@ -158,8 +240,92 @@ public:
                                 pGo->SetFlag(GAMEOBJECT_FLAGS,GO_FLAG_LOCKED);
                     }
                     break;
+<<<<<<< HEAD
                 }
                 default: break;
+=======
+
+                case NPC_AURIAYA:
+                    uiAuriayaGUID = creature->GetGUID();
+                    break;
+                case NPC_MIMIRON:
+                    uiMimironGUID = creature->GetGUID();
+                    break;
+                case NPC_HODIR:
+                    uiHodirGUID = creature->GetGUID();
+                    break;
+                case NPC_THORIM:
+                    uiThorimGUID = creature->GetGUID();
+                    break;
+                case NPC_FREYA:
+                    uiFreyaGUID = creature->GetGUID();
+                    break;
+                case NPC_VEZAX:
+                    uiVezaxGUID = creature->GetGUID();
+                    break;
+                case NPC_YOGGSARON:
+                    uiYoggSaronGUID = creature->GetGUID();
+                    break;
+                case NPC_ALGALON:
+                    uiAlgalonGUID = creature->GetGUID();
+                    break;
+            }
+
+         }
+
+        void OnGameObjectCreate(GameObject* go)
+        {
+            switch(go->GetEntry())
+            {
+                case GO_KOLOGARN_CHEST_HERO:
+                case GO_KOLOGARN_CHEST:
+                    uiKologarnChestGUID = go->GetGUID();
+                    break;
+                case GO_KOLOGARN_BRIDGE:
+                    uiKologarnBridgeGUID = go->GetGUID();
+                    if (GetBossState(TYPE_KOLOGARN) == DONE)
+                        HandleGameObject(0, false, go);
+                    break;
+                case GO_KOLOGARN_DOOR:
+                    uiKologarnDoorGUID = go->GetGUID();
+                    break;
+                case GO_THORIM_CHEST_HERO:
+                case GO_THORIM_CHEST:
+                    uiThorimChestGUID =go->GetGUID();
+                    break;
+                case GO_HODIR_CHEST_HERO:
+                case GO_HODIR_CHEST:
+                    uiHodirChestGUID = go->GetGUID();
+                    break;
+                case GO_FREYA_CHEST_HERO:
+                case GO_FREYA_CHEST:
+                    uiFreyaChestGUID = go->GetGUID();
+                    break;
+                case GO_LEVIATHAN_DOOR:
+                    AddDoor(go, true);
+                    break;
+                case GO_LEVIATHAN_GATE:
+                    uiLeviathanGateGUID = go->GetGUID();
+                    if (GetBossState(TYPE_LEVIATHAN) == DONE)
+                        go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                    break;
+                case GO_VEZAX_DOOR:
+                    uiVezaxDoorGUID = go->GetGUID();
+                    HandleGameObject(NULL, false, go);
+                    break;
+                case GO_RAZOR_HARPOON_1:
+                    uiRazorHarpoonGUIDs[0] = go->GetGUID();
+                    break;
+                case GO_RAZOR_HARPOON_2:
+                    uiRazorHarpoonGUIDs[1] = go->GetGUID();
+                    break;
+                case GO_RAZOR_HARPOON_3:
+                    uiRazorHarpoonGUIDs[2] = go->GetGUID();
+                    break;
+                case GO_RAZOR_HARPOON_4:
+                    uiRazorHarpoonGUIDs[3] = go->GetGUID();
+                    break;
+>>>>>>> 24dae7dd9a782145783f68769dd7f7a9a61fbeee
             }
         }
         
@@ -437,6 +603,7 @@ public:
                 case BOSS_HODIR:
                     CheckKeepersState();
                     break;
+<<<<<<< HEAD
                 case BOSS_THORIM:
                     if (GameObject* pThorimLever = instance->GetGameObject(ThorimLeverGUID))
                     {
@@ -471,6 +638,48 @@ public:
         }
     
         void CheckKeepersState()
+=======
+            }
+        }
+
+        uint64 GetData64(uint32 data)
+        {
+            switch(data)
+            {
+                case TYPE_LEVIATHAN:            return uiLeviathanGUID;
+                case TYPE_IGNIS:                return uiIgnisGUID;
+                case TYPE_RAZORSCALE:           return uiRazorscaleGUID;
+                case DATA_RAZORSCALE_CONTROL:   return uiRazorscaleController;
+                case TYPE_XT002:                return uiXT002GUID;
+                case TYPE_KOLOGARN:             return uiKologarnGUID;
+                case DATA_LEFT_ARM:             return uiLeftArmGUID;
+                case DATA_RIGHT_ARM:            return uiRightArmGUID;
+                case TYPE_AURIAYA:              return uiAuriayaGUID;
+                case TYPE_MIMIRON:              return uiMimironGUID;
+                case TYPE_HODIR:                return uiHodirGUID;
+                case TYPE_THORIM:               return uiThorimGUID;
+                case TYPE_FREYA:                return uiFreyaGUID;
+                case TYPE_VEZAX:                return uiVezaxGUID;
+                case TYPE_YOGGSARON:            return uiYoggSaronGUID;
+                case TYPE_ALGALON:              return uiAlgalonGUID;
+
+                // razorscale expedition commander
+                case DATA_EXP_COMMANDER:        return uiExpCommanderGUID;
+                case GO_RAZOR_HARPOON_1:        return uiRazorHarpoonGUIDs[0];
+                case GO_RAZOR_HARPOON_2:        return uiRazorHarpoonGUIDs[1];
+                case GO_RAZOR_HARPOON_3:        return uiRazorHarpoonGUIDs[2];
+                case GO_RAZOR_HARPOON_4:        return uiRazorHarpoonGUIDs[3];
+                // Assembly of Iron
+                case DATA_STEELBREAKER:         return uiAssemblyGUIDs[0];
+                case DATA_MOLGEIM:              return uiAssemblyGUIDs[1];
+                case DATA_BRUNDIR:              return uiAssemblyGUIDs[2];
+            }
+
+            return 0;
+        }
+
+        uint32 GetData(uint32 type)
+>>>>>>> 24dae7dd9a782145783f68769dd7f7a9a61fbeee
         {
             if (GameObject* pGo = instance->GetGameObject(KeepersGateGUID))
             {
@@ -514,6 +723,7 @@ public:
         return true;
     }
 };
+
 
 void AddSC_instance_ulduar()
 {

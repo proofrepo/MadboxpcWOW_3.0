@@ -18,6 +18,7 @@
 #ifndef DEF_EYE_OF_ETERNITY_H
 #define DEF_EYE_OF_ETERNITY_H
 
+<<<<<<< HEAD
 enum eInstanceData
 {
     TYPE_MALYGOS,
@@ -26,10 +27,25 @@ enum eInstanceData
 
 enum eData64
 {
+=======
+enum InstanceData
+{
+    DATA_MALYGOS_EVENT,
+    MAX_ENCOUNTER,
+
+    DATA_VORTEX_HANDLING,
+    DATA_POWER_SPARKS_HANDLING
+};
+
+enum InstanceData64
+{
+    DATA_TRIGGER,
+>>>>>>> 24dae7dd9a782145783f68769dd7f7a9a61fbeee
     DATA_MALYGOS,
     DATA_PLATFORM
 };
 
+<<<<<<< HEAD
 enum eCreatures
 {
     NPC_MALYGOS                 = 28859,
@@ -62,6 +78,41 @@ enum eGameObjects
 enum eAchievementData
 {
     ACHIEV_TIMED_START_EVENT    = 20387
+=======
+enum InstanceNpcs
+{
+    NPC_MALYGOS             = 28859,
+    NPC_VORTEX_TRIGGER      = 30090,
+    NPC_PORTAL_TRIGGER      = 30118,
+    NPC_POWER_SPARK         = 30084,
+    NPC_HOVER_DISK_MELEE    = 30234,
+    NPC_HOVER_DISK_CASTER   = 30248,
+    NPC_ARCANE_OVERLOAD     = 30282,
+    NPC_WYRMREST_SKYTALON   = 30161,
+    NPC_ALEXSTRASZA         = 32295
+};
+
+enum InstanceGameObjects
+{
+    GO_NEXUS_RAID_PLATFORM      = 193070,
+    GO_EXIT_PORTAL              = 193908,
+    GO_FOCUSING_IRIS            = 193958,
+    GO_ALEXSTRASZA_S_GIFT       = 193905,
+    GO_ALEXSTRASZA_S_GIFT_2     = 193967
+};
+
+enum InstanceEvents
+{
+    EVENT_FOCUSING_IRIS = 20711    
+};
+
+enum InstanceSpells
+{
+    SPELL_VORTEX_4          = 55853, // damage | used to enter to the vehicle
+    SPELL_VORTEX_5          = 56263, // damage | used to enter to the vehicle
+    SPELL_PORTAL_OPENED     = 61236,
+    SPELL_RIDE_RED_DRAGON   = 56071,
+>>>>>>> 24dae7dd9a782145783f68769dd7f7a9a61fbeee
 };
 
 #endif
