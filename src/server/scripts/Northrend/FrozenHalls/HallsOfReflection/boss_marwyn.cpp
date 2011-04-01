@@ -64,7 +64,7 @@ public:
        bool Regular;
        bool m_bIsCall;
 
-       //FUNCTIONS
+       // FUNCTIONS
        uint32 m_uiBerserkTimer;
        uint32 m_uiSharedSufferingTimer;
        uint32 m_uiWellTimer;
@@ -107,33 +107,57 @@ public:
                    case 0:
                        switch(urand(1, 3))
                        {
-                         case 1: pSummon = NPC_DARK_1; break;
-                         case 2: pSummon = NPC_DARK_3; break;
-                         case 3: pSummon = NPC_DARK_6; break;
+                         case 1: 
+                             pSummon = NPC_DARK_1; 
+                             break;
+                         case 2: 
+                             pSummon = NPC_DARK_3; 
+                             break;
+                         case 3: 
+                             pSummon = NPC_DARK_6; 
+                             break;
                        }
                        break;
                    case 1: 
                        switch(urand(1, 3))
                        {
-                         case 1: pSummon = NPC_DARK_2; break;
-                         case 2: pSummon = NPC_DARK_3; break;
-                         case 3: pSummon = NPC_DARK_4; break;
+                         case 1:
+                             pSummon = NPC_DARK_2; 
+                             break;
+                         case 2: 
+                             pSummon = NPC_DARK_3;
+                             break;
+                         case 3: 
+                             pSummon = NPC_DARK_4; 
+                             break;
                        }
                        break;
                    case 2: 
                        switch(urand(1, 3))
                        {
-                         case 1: pSummon = NPC_DARK_2; break;
-                         case 2: pSummon = NPC_DARK_5; break;
-                         case 3: pSummon = NPC_DARK_6; break;
+                         case 1: 
+                             pSummon = NPC_DARK_2; 
+                             break;
+                         case 2: 
+                             pSummon = NPC_DARK_5; 
+                             break;
+                         case 3: 
+                             pSummon = NPC_DARK_6; 
+                             break;
                        }
                        break;
                    case 3: 
                        switch(urand(1, 3))
                        {
-                         case 1: pSummon = NPC_DARK_1; break;
-                         case 2: pSummon = NPC_DARK_5; break;
-                         case 3: pSummon = NPC_DARK_4; break;
+                         case 1: 
+                             pSummon = NPC_DARK_1; 
+                             break;
+                         case 2:
+                             pSummon = NPC_DARK_5; 
+                             break;
+                         case 3: 
+                             pSummon = NPC_DARK_4; 
+                             break;
                        }
                        break;
                  }
@@ -181,8 +205,12 @@ public:
         {
             switch(urand(0,1))
             {
-                case 0: DoScriptText(SAY_MARWYN_SLAY01, me); break;
-                case 1: DoScriptText(SAY_MARWYN_SLAY02, me); break;
+                case 0: 
+                    DoScriptText(SAY_MARWYN_SLAY01, me);
+                    break;
+                case 1: 
+                    DoScriptText(SAY_MARWYN_SLAY02, me);
+                    break;
             }
         }
 

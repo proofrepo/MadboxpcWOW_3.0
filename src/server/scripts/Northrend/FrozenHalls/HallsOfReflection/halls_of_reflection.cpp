@@ -176,10 +176,10 @@ public:
         switch(pCreature->GetEntry())
         {
             case NPC_JAINA:
-                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Леди Джайна, мы готовы к следующей миссии!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Dark Lady, I think I hear Arthas coming. Whatever you're going to do, do it quickly", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
                 break;
             case NPC_SYLVANA:
-                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Леди Сильвана, мы готовы к следующей миссии!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+                pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Dark Lady, I think I hear Arthas coming. Whatever you're going to do, do it quickly", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
                 break;
         }
 
@@ -1256,22 +1256,16 @@ public:
             Reset();
         }
 
-        void Reset()
-        {
-        }
+        void Reset() { }
 
-        void JustDied(Unit* pKiller)
-        {
-        }
+        void JustDied(Unit* pKiller) { }
 
         void AttackStart(Unit* who)
         {
             return;
         }
 
-        void UpdateAI(const uint32 diff)
-        {
-        }
+        void UpdateAI(const uint32 diff) { }
     };
 
     CreatureAI* GetAI(Creature* pCreature) const
