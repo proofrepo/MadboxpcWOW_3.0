@@ -400,11 +400,7 @@ void AddSC_boss_varos();
 void AddSC_boss_eregos();
 void AddSC_instance_oculus();
 void AddSC_oculus();
-<<<<<<< HEAD
 void AddSC_boss_malygos();
-=======
-void AddSC_boss_malygos();              // The Nexus: Eye of Eternity
->>>>>>> 24dae7dd9a782145783f68769dd7f7a9a61fbeee
 void AddSC_instance_eye_of_eternity();
 void AddSC_boss_sartharion();            //Obsidian Sanctum
 void AddSC_instance_obsidian_sanctum();
@@ -476,6 +472,7 @@ void AddSC_instance_halls_of_reflection();   // Halls of Reflection
 void AddSC_halls_of_reflection();
 void AddSC_boss_falric();
 void AddSC_boss_marwyn();
+void AddSC_boss_lich_king_hr();
 void AddSC_boss_lord_marrowgar();       // Icecrown Citadel
 void AddSC_boss_lady_deathwhisper();
 void AddSC_boss_deathbringer_saurfang();
@@ -1103,11 +1100,7 @@ void AddNorthrendScripts()
     AddSC_boss_eregos();
     AddSC_instance_oculus();
     AddSC_oculus();
-<<<<<<< HEAD
     AddSC_boss_malygos();                //The Nexus The Eye of Eternity
-=======
-    AddSC_boss_malygos();              // The Nexus: Eye of Eternity
->>>>>>> 24dae7dd9a782145783f68769dd7f7a9a61fbeee
     AddSC_instance_eye_of_eternity();
     AddSC_boss_sartharion();            //Obsidian Sanctum
     AddSC_instance_obsidian_sanctum();
@@ -1179,6 +1172,7 @@ void AddNorthrendScripts()
     AddSC_halls_of_reflection();
     AddSC_boss_falric();
     AddSC_boss_marwyn();
+    AddSC_boss_lich_king_hr();
     AddSC_boss_lord_marrowgar();        // Icecrown Citadel
     AddSC_boss_lady_deathwhisper();
     AddSC_boss_deathbringer_saurfang();
