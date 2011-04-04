@@ -931,6 +931,7 @@ void Creature::UpdateDamagePhysical(WeaponAttackType attType)
 #define ENTRY_FIRE_ELEMENTAL    15438
 #define ENTRY_GHOUL             26125
 #define ENTRY_FERAL_SPIRIT      29264
+#define ENTRY_BLOODWORM         28017
 
 bool Guardian::UpdateStats(Stats stat)
 {
@@ -1094,6 +1095,7 @@ void Guardian::UpdateMaxHealth()
         case ENTRY_SUCCUBUS:    multiplicator = 9.1f;   break;
         case ENTRY_FELHUNTER:   multiplicator = 9.5f;   break;
         case ENTRY_FELGUARD:    multiplicator = 11.0f;  break;
+        case ENTRY_BLOODWORM:   multiplicator = 1.0f;   break;
         default:                multiplicator = 10.0f;  break;
     }
 
