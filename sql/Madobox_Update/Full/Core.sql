@@ -1,0 +1,21 @@
+-- Dalara_Sewers.sql
+UPDATE `gameobject_template` SET `flags` = '36' WHERE `entry` =192642;
+UPDATE `gameobject_template` SET `flags` = '36' WHERE `entry` =192643;
+UPDATE `battleground_template` SET `MinPlayersPerTeam` = '0', `MaxPlayersPerTeam` = '2' WHERE `battleground_template`.`id` =10;
+DELETE FROM `disables` WHERE `entry` = 10;
+
+-- Isle_Of_Conquest.sql
+-- Fix Exploit Isle Of conquest 
+UPDATE `creature_template` SET `ScriptName`='bosses_isle_of_conquest' WHERE `entry` IN (34924,34922);
+-- Fix vehicle system.
+DELETE FROM npc_spellclick_spells WHERE npc_entry IN (35413, 35419, 35431, 35433); 
+INSERT INTO npc_spellclick_spells (`npc_entry`, `spell_id`, `quest_start`, `quest_start_active`, `quest_end`, `cast_flags`, `aura_required`, `aura_forbidden`, `user_type`) VALUES 
+(35413, 60968, 0, 0, 0, 1, 0, 0, 0), 
+(35419, 68503, 0, 0, 0, 1, 0, 0, 0), 
+(35431, 46598, 0, 0, 0, 1, 0, 0, 0), 
+(35433, 46598, 0, 0, 0, 1, 0, 0, 0);  
+-- Isle of Conquest bosses aggro through wall fix
+UPDATE `creature_template` SET `unit_flags` = 256 WHERE `entry` = 34924;
+UPDATE `creature_template` SET `unit_flags` = 256 WHERE `entry` = 34922;
+UPDATE `creature_template` SET `unit_flags` = 256 WHERE `entry` = 34918;
+UPDATE `creature_template` SET `unit_flags` = 256 WHERE `entry` = 34919;
