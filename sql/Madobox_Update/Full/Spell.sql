@@ -106,3 +106,6 @@ INSERT INTO `spell_linked_spell` VALUES (51690,61851,0,'Killing Spree');
 
 -- [Rogue]Blade_Twisting.sql
 UPDATE `spell_proc_event` SET `SpellFamilyMask0` = 0 WHERE `entry` IN (31124,31126);
+
+-- [Hunter]Wyvern_Sting.sql
+DELETE FROM `spell_linked_spell` WHERE `comment` = 'Wyvern Sting';
