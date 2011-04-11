@@ -81,7 +81,7 @@ INSERT INTO `spell_bonus_data` VALUES
 (9007,0,0,-1,-1,'Druid - Pounce Bleed'),
 (22568,0,0,-1,-1,'Druid - Ferocious Bite');
 
-- Hunter
+-- Hunter
 UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` IN (3044,3674,53352,13812,13797,1978,42243);
 UPDATE `spell_bonus_data` SET `ap_dot_bonus` = 0.1 WHERE `entry` = 13812;
 DELETE FROM `spell_bonus_data` WHERE `entry` IN (24131,53353);
@@ -97,5 +97,9 @@ INSERT INTO `spell_ranks` VALUES
 (24131,49009,5),
 (24131,49010,6);
 
-- Rogue
+-- Rogue
 UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` IN (2818,2819,11353,11354,25349,26968,27187,57969,57970);
+
+-- [Rogue]Killin_spree.sql
+DELETE FROM `spell_linked_spell` WHERE `spell_trigger` = 51690;
+INSERT INTO `spell_linked_spell` VALUES (51690,61851,0,'Killing Spree');
