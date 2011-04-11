@@ -103,3 +103,6 @@ UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` 
 -- [Rogue]Killin_spree.sql
 DELETE FROM `spell_linked_spell` WHERE `spell_trigger` = 51690;
 INSERT INTO `spell_linked_spell` VALUES (51690,61851,0,'Killing Spree');
+
+-- [Rogue]Blade_Twisting.sql
+UPDATE `spell_proc_event` SET `SpellFamilyMask0` = 0 WHERE `entry` IN (31124,31126);
