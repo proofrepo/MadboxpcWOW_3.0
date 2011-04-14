@@ -114,3 +114,6 @@ DELETE FROM `spell_linked_spell` WHERE `comment` = 'Wyvern Sting';
 DELETE FROM `spell_bonus_data` WHERE `entry` = 64085;
 INSERT INTO `spell_bonus_data` VALUES
 (64085,1.2,-1,-1,-1,"Priest - Vampiric Touch (Dispelled)")
+
+-- [Rogue]Quick_Recovery.sql
+UPDATE `spell_proc_event` SET `procEx`=`procEx`|0x00000030 WHERE `entry` IN (31244,31245);
