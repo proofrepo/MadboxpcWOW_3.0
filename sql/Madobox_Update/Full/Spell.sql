@@ -109,3 +109,8 @@ UPDATE `spell_proc_event` SET `SpellFamilyMask0` = 0 WHERE `entry` IN (31124,311
 
 -- [Hunter]Wyvern_Sting.sql
 DELETE FROM `spell_linked_spell` WHERE `comment` = 'Wyvern Sting';
+
+-- [Priest]Vampiric_Touch.sql
+DELETE FROM `spell_bonus_data` WHERE `entry` = 64085;
+INSERT INTO `spell_bonus_data` VALUES
+(64085,1.2,-1,-1,-1,"Priest - Vampiric Touch (Dispelled)")
