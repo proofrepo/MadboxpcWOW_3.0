@@ -4447,10 +4447,10 @@ void AuraEffect::HandleModStateImmunityMask(AuraApplication const * aurApp, uint
     // however not all mechanic specified in immunity
     if (GetId() == 46924)
     {
-        if(apply)
-            immunity_list.pop_back(); // Delete Disarm
-        immunity_list.push_back(SPELL_AURA_MOD_ROOT);
-        immunity_list.push_back(SPELL_AURA_MOD_DECREASE_SPEED);
+        immunity_list.pop_back(); // delete Disarm
+        immunity_list.push_back(SPELL_AURA_MOD_PACIFY_SILENCE);
+        target->ApplySpellImmune(GetId(), IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, apply);
+        target->ApplySpellImmune(GetId(), IMMUNITY_MECHANIC, MECHANIC_SNARE, apply); 
     }
 
     if (apply && GetSpellProto()->AttributesEx & SPELL_ATTR1_DISPEL_AURAS_ON_IMMUNITY)
