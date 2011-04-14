@@ -4170,6 +4170,10 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->DurationIndex = 21;
             count++;
             break;
+        case 20467: // Judgement of Command
+            spellInfo->EffectBasePoints[1] = 19;
+            count++;
+            break;
         case 71266: // Swarming Shadows
             spellInfo->AreaGroupId = 0;
             count++;
